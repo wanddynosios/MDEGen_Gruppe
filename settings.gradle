@@ -1,0 +1,3 @@
+rootProject.name = 'kino'
+//include ":MDEGen"
+//project(":MDEGen").projectDir = file("../MDEGen")
