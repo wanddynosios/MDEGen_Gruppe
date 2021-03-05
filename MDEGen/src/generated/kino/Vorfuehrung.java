@@ -1,4 +1,4 @@
-/**--- Generated at Fri Mar 05 15:18:57 CET 2021 
+/**--- Generated at Fri Mar 05 18:16:22 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -25,6 +25,7 @@ public class Vorfuehrung extends Observable implements java.io.Serializable, IVo
 {
    //30 ===== GENERATED:      Attribute Section ======
    private Integer id;
+   private Integer vorfuehrungsNummer;
    private Integer preisParkett;
    private Integer preisMitte;
    private Integer preisLoge;
@@ -34,12 +35,13 @@ public class Vorfuehrung extends Observable implements java.io.Serializable, IVo
    //40 ===== Editable : Your Attribute Section ======
    
    //50 ===== GENERATED:      Constructor ============
-   private Vorfuehrung(Integer id, Film film, Saal saal, Integer preisParkett, Integer preisMitte, Integer preisLoge, Integer freiePlaetzeParkett, Integer freiePlaetzeMitte, Integer freiePlaetzeLoge, boolean objectOnly)
+   private Vorfuehrung(Integer id, Film film, Saal saal, Integer vorfuehrungsNummer, Integer preisParkett, Integer preisMitte, Integer preisLoge, Integer freiePlaetzeParkett, Integer freiePlaetzeMitte, Integer freiePlaetzeLoge, boolean objectOnly)
    throws PersistenceException{
       super();
       this.setId(id);
       vorfuehrungFilmSupervisor.getInstance().set(this, film);
       vorfuehrungSaalSupervisor.getInstance().set(this, saal);
+      this.vorfuehrungsNummer = vorfuehrungsNummer;
       this.preisParkett = preisParkett;
       this.preisMitte = preisMitte;
       this.preisLoge = preisLoge;
@@ -49,18 +51,18 @@ public class Vorfuehrung extends Observable implements java.io.Serializable, IVo
       if(objectOnly) return;
    }
    /** Caution: A Call to this Method Requires to add any newly instantiated Object to its Cache! */
-   public static Vorfuehrung createAlreadyPersistent(VorfuehrungProxy proxy, Film film, Saal saal, Integer preisParkett, Integer preisMitte, Integer preisLoge, Integer freiePlaetzeParkett, Integer freiePlaetzeMitte, Integer freiePlaetzeLoge)throws PersistenceException{
+   public static Vorfuehrung createAlreadyPersistent(VorfuehrungProxy proxy, Film film, Saal saal, Integer vorfuehrungsNummer, Integer preisParkett, Integer preisMitte, Integer preisLoge, Integer freiePlaetzeParkett, Integer freiePlaetzeMitte, Integer freiePlaetzeLoge)throws PersistenceException{
       if(proxy.isObjectPresent()) return proxy.getTheObject();
-      return new Vorfuehrung(proxy.getId(), film, saal, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge, true);
+      return new Vorfuehrung(proxy.getId(), film, saal, vorfuehrungsNummer, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge, true);
    }
-   public static Vorfuehrung createFresh(Film film, Saal saal, Integer preisParkett, Integer preisMitte, Integer preisLoge, Integer freiePlaetzeParkett, Integer freiePlaetzeMitte, Integer freiePlaetzeLoge)throws PersistenceException{
+   public static Vorfuehrung createFresh(Film film, Saal saal, Integer vorfuehrungsNummer, Integer preisParkett, Integer preisMitte, Integer preisLoge, Integer freiePlaetzeParkett, Integer freiePlaetzeMitte, Integer freiePlaetzeLoge)throws PersistenceException{
       db.executer.DBDMLExecuter dmlExecuter = PersistenceExecuterFactory.getConfiguredFactory().getDBDMLExecuter();
       Integer id = dmlExecuter.getNextId();
       try{
-         dmlExecuter.insertInto("Vorfuehrung", "id, typeKey, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge", 
-         id.toString() + ", " + TypeKeyManager.getTheInstance().getTypeKey("Kino", "Vorfuehrung").toString() + ", " + preisParkett.toString() + ", " + preisMitte.toString() + ", " + preisLoge.toString() + ", " + freiePlaetzeParkett.toString() + ", " + freiePlaetzeMitte.toString() + ", " + freiePlaetzeLoge.toString());
+         dmlExecuter.insertInto("Vorfuehrung", "id, typeKey, vorfuehrungsNummer, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge", 
+         id.toString() + ", " + TypeKeyManager.getTheInstance().getTypeKey("Kino", "Vorfuehrung").toString() + ", " + vorfuehrungsNummer.toString() + ", " + preisParkett.toString() + ", " + preisMitte.toString() + ", " + preisLoge.toString() + ", " + freiePlaetzeParkett.toString() + ", " + freiePlaetzeMitte.toString() + ", " + freiePlaetzeLoge.toString());
       }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
-      Vorfuehrung me = new Vorfuehrung(id, film, saal, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge, false);
+      Vorfuehrung me = new Vorfuehrung(id, film, saal, vorfuehrungsNummer, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge, false);
       Kino.getInstance().addVorfuehrungProxy(new VorfuehrungProxy(me));
       return me;
    }
@@ -103,6 +105,14 @@ public class Vorfuehrung extends Observable implements java.io.Serializable, IVo
    }
    public void setSaal(Saal newSaal)throws PersistenceException{
       vorfuehrungSaalSupervisor.getInstance().change(this, this.getSaal(), newSaal);
+   }
+   public Integer getVorfuehrungsNummer() {
+      return this.vorfuehrungsNummer;
+   }
+   public void setVorfuehrungsNummer(Integer newVorfuehrungsNummer) throws PersistenceException{
+      this.vorfuehrungsNummer = newVorfuehrungsNummer;
+      try{PersistenceExecuterFactory.getConfiguredFactory().getDBDMLExecuter().update("Vorfuehrung", "vorfuehrungsNummer", newVorfuehrungsNummer.toString(), this.getId());
+      }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
    }
    public Integer getPreisParkett() {
       return this.preisParkett;
@@ -156,16 +166,46 @@ public class Vorfuehrung extends Observable implements java.io.Serializable, IVo
 /**
  * Wandelt eine Reservierung in eine konkrete Buchung umr
  */
-   public void buche(Resevierung reservierung, Collection<BuchungsEinheit> buchungsEinheiten)throws PlatzGebuchtException{
+   public void buche(Resevierung reservierung, Collection<BuchungsEinheit> buchungsEinheiten) throws PlatzGebuchtException, PersistenceException {
       // TODO: Implement Operation buche
       return;
    }
 /**
  * Reserviert eine bestimmte Anzahl an Plätzen in einer Kategorie
  */
-   public void reserviere(Resevierung reservierung)throws NichtGenugPlaetzeException{
-      // TODO: Implement Operation reserviere
-      return;
+   public void reserviere(Resevierung reservierung) throws NichtGenugPlaetzeException, PersistenceException, ConstraintViolation {
+      Kategorie kategorie = reservierung.getKategorie().getTheObject();
+      Integer freiePlaetze = 0;
+      switch (kategorie.getClass().getSimpleName()){
+         case "KategorieParkett": freiePlaetze = getFreiePlaetzeParkett(); break;
+         case "KategorieMitte": freiePlaetze = getFreiePlaetzeMitte(); break;
+         case "KategorieLoge": freiePlaetze = getFreiePlaetzeLoge(); break;
+         default: throw new RuntimeException("Unbekannte Kategorie. Schreibweise geaendert?");
+      }
+      if (freiePlaetze - reservierung.getAnzahlPlaetze() < 0)
+         throw new NichtGenugPlaetzeException();
+      switch (kategorie.getClass().getSimpleName()){
+         case "KategorieParkett": setFreiePlaetzeParkett(getFreiePlaetzeParkett()-reservierung.getAnzahlPlaetze()); break;
+         case "KategorieMitte": setFreiePlaetzeMitte(getFreiePlaetzeMitte()-reservierung.getAnzahlPlaetze()); break;
+         case "KategorieLoge": setFreiePlaetzeLoge(getFreiePlaetzeLoge()-reservierung.getAnzahlPlaetze()); break;
+         default: throw new RuntimeException("Unbekannte Kategorie. Schreibweise geaendert?");
+      }
+      reservierung.getVorfuehrung().addToReservierungen(reservierung);
    }
-//90 ===== GENERATED: End of Your Operations ======
+
+   @Override
+   public String toString() {
+      return "Vorfuehrung{" +
+              "id=" + id +
+              ", vorfuehrungsNummer=" + vorfuehrungsNummer +
+              ", preisParkett=" + preisParkett +
+              ", preisMitte=" + preisMitte +
+              ", preisLoge=" + preisLoge +
+              ", freiePlaetzeParkett=" + freiePlaetzeParkett +
+              ", freiePlaetzeMitte=" + freiePlaetzeMitte +
+              ", freiePlaetzeLoge=" + freiePlaetzeLoge +
+              '}';
+   }
+
+   //90 ===== GENERATED: End of Your Operations ======
 }

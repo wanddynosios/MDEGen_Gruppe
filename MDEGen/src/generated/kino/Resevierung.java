@@ -1,4 +1,4 @@
-/**--- Generated at Fri Mar 05 15:18:57 CET 2021 
+/**--- Generated at Fri Mar 05 18:16:22 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -26,32 +26,34 @@ public class Resevierung extends Observable implements java.io.Serializable, IRe
    private Integer id;
    private String name;
    private Integer anzahlPlaetze;
+   private Boolean istBereitsEingeloest;
    //40 ===== Editable : Your Attribute Section ======
    
    //50 ===== GENERATED:      Constructor ============
-   private Resevierung(Integer id, Kategorie kategorie, String name, Integer anzahlPlaetze, Vorfuehrung vorfuehrung, boolean objectOnly)
+   private Resevierung(Integer id, Kategorie kategorie, String name, Integer anzahlPlaetze, Boolean istBereitsEingeloest, Vorfuehrung vorfuehrung, boolean objectOnly)
    throws PersistenceException{
       super();
       this.setId(id);
       reservierungKategorieSupervisor.getInstance().set(this, kategorie);
       this.name = name;
       this.anzahlPlaetze = anzahlPlaetze;
+      this.istBereitsEingeloest = istBereitsEingeloest;
       if(objectOnly) return;
       try{vorfuehrungReservierungenSupervisor.getInstance().add(vorfuehrung,this);}catch(ConstraintViolation cv){}// Ok, because consistency is guaranteed with this statement
    }
    /** Caution: A Call to this Method Requires to add any newly instantiated Object to its Cache! */
-   public static Resevierung createAlreadyPersistent(ResevierungProxy proxy, Kategorie kategorie, String name, Integer anzahlPlaetze, Vorfuehrung vorfuehrung)throws PersistenceException{
+   public static Resevierung createAlreadyPersistent(ResevierungProxy proxy, Kategorie kategorie, String name, Integer anzahlPlaetze, Boolean istBereitsEingeloest, Vorfuehrung vorfuehrung)throws PersistenceException{
       if(proxy.isObjectPresent()) return proxy.getTheObject();
-      return new Resevierung(proxy.getId(), kategorie, name, anzahlPlaetze, vorfuehrung, true);
+      return new Resevierung(proxy.getId(), kategorie, name, anzahlPlaetze, istBereitsEingeloest, vorfuehrung, true);
    }
-   public static Resevierung createFresh(Kategorie kategorie, String name, Integer anzahlPlaetze, Vorfuehrung vorfuehrung)throws PersistenceException{
+   public static Resevierung createFresh(Kategorie kategorie, String name, Integer anzahlPlaetze, Boolean istBereitsEingeloest, Vorfuehrung vorfuehrung)throws PersistenceException{
       db.executer.DBDMLExecuter dmlExecuter = PersistenceExecuterFactory.getConfiguredFactory().getDBDMLExecuter();
       Integer id = dmlExecuter.getNextId();
       try{
-         dmlExecuter.insertInto("Resevierung", "id, typeKey, name, anzahlPlaetze", 
-         id.toString() + ", " + TypeKeyManager.getTheInstance().getTypeKey("Kino", "Resevierung").toString() + ", " + "'" + name + "'" + ", " + anzahlPlaetze.toString());
+         dmlExecuter.insertInto("Resevierung", "id, typeKey, name, anzahlPlaetze, istBereitsEingeloest", 
+         id.toString() + ", " + TypeKeyManager.getTheInstance().getTypeKey("Kino", "Resevierung").toString() + ", " + "'" + name + "'" + ", " + anzahlPlaetze.toString() + ", " + istBereitsEingeloest.toString());
       }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
-      Resevierung me = new Resevierung(id, kategorie, name, anzahlPlaetze, vorfuehrung, false);
+      Resevierung me = new Resevierung(id, kategorie, name, anzahlPlaetze, istBereitsEingeloest, vorfuehrung, false);
       Kino.getInstance().addResevierungProxy(new ResevierungProxy(me));
       return me;
    }
@@ -72,17 +74,6 @@ public class Resevierung extends Observable implements java.io.Serializable, IRe
       return ((IResevierung)o).getId().equals(this.getId());
    }
    public int hashCode() {return this.getId().hashCode();}
-   public List<Sitz> getSitze() throws PersistenceException{
-      List<Sitz> result = new ArrayList<>();
-      for (ISitz i : reservierungSitzeSupervisor.getInstance().getSitze(this)) result.add(i.getTheObject());
-      return result;
-   }
-   public void addToSitze(Sitz arg) throws PersistenceException{
-      reservierungSitzeSupervisor.getInstance().add(this, arg);
-   }
-   public boolean removeFromSitze(Sitz arg) throws PersistenceException{
-      return reservierungSitzeSupervisor.getInstance().remove(this, arg);
-   }
    public Kategorie getKategorie() throws PersistenceException{
       return reservierungKategorieSupervisor.getInstance().getKategorie(this).getTheObject();
    }
@@ -103,6 +94,14 @@ public class Resevierung extends Observable implements java.io.Serializable, IRe
    public void setAnzahlPlaetze(Integer newAnzahlPlaetze) throws PersistenceException{
       this.anzahlPlaetze = newAnzahlPlaetze;
       try{PersistenceExecuterFactory.getConfiguredFactory().getDBDMLExecuter().update("Resevierung", "anzahlPlaetze", newAnzahlPlaetze.toString(), this.getId());
+      }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
+   }
+   public Boolean getIstBereitsEingeloest() {
+      return this.istBereitsEingeloest;
+   }
+   public void setIstBereitsEingeloest(Boolean newIstBereitsEingeloest) throws PersistenceException{
+      this.istBereitsEingeloest = newIstBereitsEingeloest;
+      try{PersistenceExecuterFactory.getConfiguredFactory().getDBDMLExecuter().update("Resevierung", "istBereitsEingeloest", newIstBereitsEingeloest.toString(), this.getId());
       }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
    }
    public Vorfuehrung getVorfuehrung() throws PersistenceException{

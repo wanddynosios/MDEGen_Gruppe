@@ -1,11 +1,11 @@
-/**--- Generated at Fri Mar 05 15:18:57 CET 2021 
+/**--- Generated at Fri Mar 05 18:16:22 CET 2021 
  * --- No Change Allowed!  
  */
 package generated.kino.commands;
 import generated.kino.*;
 import commands.*;
 public class BuchungsEinheit_constructor_Command extends ServiceCommand<BuchungsEinheit>{
-   private static final long serialVersionUID = -1131409621L;
+   private static final long serialVersionUID = 1461437922L;
    private Integer  reihenNr;
    private Integer  sitzNr;
    public BuchungsEinheit_constructor_Command(Integer  reihenNr, Integer  sitzNr){

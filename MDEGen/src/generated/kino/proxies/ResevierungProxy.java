@@ -1,4 +1,4 @@
-/**--- Generated at Fri Mar 05 15:18:57 CET 2021 
+/**--- Generated at Fri Mar 05 18:16:22 CET 2021 
  * --- No Change Allowed!  
  */
 package generated.kino.proxies;
@@ -7,8 +7,6 @@ import java.util.Optional;
 import db.executer.*;
 import generated.kino.Resevierung;
 import java.sql.ResultSet;
-import generated.kino.Sitz;
-import java.util.List;
 import generated.kino.Kategorie;
 import generated.kino.relationControl.reservierungKategorieSupervisor;
 import generated.kino.Vorfuehrung;
@@ -48,18 +46,10 @@ public class ResevierungProxy implements IResevierung{
          Kategorie kategorie = reservierungKategorieSupervisor.getInstance().getKategorie(this).getTheObject();
          String name = rs.getString("name");
          Integer anzahlPlaetze = rs.getInt("anzahlPlaetze");
+         Boolean istBereitsEingeloest = rs.getBoolean("istBereitsEingeloest");
          Vorfuehrung vorfuehrung = vorfuehrungReservierungenSupervisor.getInstance().getVorfuehrung(this).getTheObject();
-         return Resevierung.createAlreadyPersistent(this, kategorie, name, anzahlPlaetze, vorfuehrung);
+         return Resevierung.createAlreadyPersistent(this, kategorie, name, anzahlPlaetze, istBereitsEingeloest, vorfuehrung);
       } catch (Exception e) {throw new PersistenceException(e.getMessage());}
-   }
-   public List<Sitz> getSitze() throws PersistenceException{
-      return this.getTheObject().getSitze();
-   }
-   public void addToSitze(Sitz arg) throws PersistenceException{
-      this.getTheObject().addToSitze(arg);
-   }
-   public boolean removeFromSitze(Sitz arg) throws PersistenceException{
-      return this.getTheObject().removeFromSitze(arg);
    }
    public Kategorie getKategorie() throws PersistenceException{
       return this.getTheObject().getKategorie();
@@ -78,6 +68,12 @@ public class ResevierungProxy implements IResevierung{
    }
    public void setAnzahlPlaetze(Integer newAnzahlPlaetze) throws PersistenceException{
       this.getTheObject().setAnzahlPlaetze(newAnzahlPlaetze);
+   }
+   public Boolean getIstBereitsEingeloest() {
+      return this.getTheObject().getIstBereitsEingeloest();
+   }
+   public void setIstBereitsEingeloest(Boolean newIstBereitsEingeloest) throws PersistenceException{
+      this.getTheObject().setIstBereitsEingeloest(newIstBereitsEingeloest);
    }
    public Vorfuehrung getVorfuehrung() throws PersistenceException{
       return this.getTheObject().getVorfuehrung();

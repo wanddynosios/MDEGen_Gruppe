@@ -1,4 +1,4 @@
-/**--- Generated at Fri Mar 05 15:18:57 CET 2021 
+/**--- Generated at Fri Mar 05 18:16:22 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -57,11 +57,6 @@ public class Kino extends Observable{
          String className2 = this.dmlExecuter.getNameOfConcreteType(pair.getP2(), "Resevierung", "Kino");
          try{this.addvorfuehrungReservierungenElement(pair.getP1(), className1, pair.getP2(), className2);}catch(ConstraintViolation cv){throw new PersistenceException(cv.getMessage());}
       }
-      for(IntegerPair pair : new InitialRelationLoader("reservierungSitze").perform().values()){
-         String className1 = this.dmlExecuter.getNameOfConcreteType(pair.getP1(), "Resevierung", "Kino");
-         String className2 = this.dmlExecuter.getNameOfConcreteType(pair.getP2(), "Sitz", "Kino");
-         try{this.addreservierungSitzeElement(pair.getP1(), className1, pair.getP2(), className2);}catch(ConstraintViolation cv){throw new PersistenceException(cv.getMessage());}
-      }
       for(IntegerPair pair : new InitialRelationLoader("vorfuehrungFilm").perform().values()){
          String className1 = this.dmlExecuter.getNameOfConcreteType(pair.getP1(), "Vorfuehrung", "Kino");
          String className2 = this.dmlExecuter.getNameOfConcreteType(pair.getP2(), "Film", "Kino");
@@ -98,12 +93,6 @@ public class Kino extends Observable{
       if(className1.equals("Vorfuehrung"))  proxy1 = this.vorfuehrungCache.get(id1);
       if(className2.equals("Resevierung"))  proxy2 = this.resevierungCache.get(id2);
       vorfuehrungReservierungenSupervisor.getInstance().addAlreadyPersistent(proxy1, proxy2);
-   }
-   private void addreservierungSitzeElement(Integer id1, String className1, Integer id2, String className2) throws ConstraintViolation, PersistenceException{
-      IResevierung proxy1 = null; ISitz proxy2 = null; 
-      if(className1.equals("Resevierung"))  proxy1 = this.resevierungCache.get(id1);
-      if(className2.equals("Sitz"))  proxy2 = this.sitzCache.get(id2);
-      reservierungSitzeSupervisor.getInstance().addAlreadyPersistent(proxy1, proxy2);
    }
    private void addvorfuehrungFilmElement(Integer id1, String className1, Integer id2, String className2) throws ConstraintViolation, PersistenceException{
       IVorfuehrung proxy1 = null; IFilm proxy2 = null; 
@@ -229,6 +218,17 @@ public class Kino extends Observable{
                  saalNummernUndSaalIds.put(saalProxy.getSaalNummer(), saalId));
          Integer saalId = saalNummernUndSaalIds.get(saalNummer);
          return Kino.getInstance().getSaal(saalId);
+   }
+/**
+ * holt die Vorfuehrung
+ */
+   public Vorfuehrung holeVorfuehrung(Integer vorfuehrungNummer){
+      Map<Integer, VorfuehrungProxy> voerfuherungen = Kino.getInstance().getVorfuehrungCache();
+      Map<Integer, Integer> vorfuherungsNummernUndVorfIds = new HashMap<>();
+      voerfuherungen.forEach((vorfuehrungId, vorfuehrungProxy) ->
+              vorfuherungsNummernUndVorfIds.put(vorfuehrungProxy.getVorfuehrungsNummer(), vorfuehrungId));
+      Integer vorfuehrungId = vorfuherungsNummernUndVorfIds.get(vorfuehrungNummer);
+      return Kino.getInstance().getVorfuehrung(vorfuehrungId);
    }
 //90 ===== GENERATED: End of Your Operations ======
 }

@@ -1,4 +1,4 @@
-/**--- Generated at Fri Mar 05 15:18:57 CET 2021 
+/**--- Generated at Fri Mar 05 18:16:22 CET 2021 
  * --- No Change Allowed!  
  */
 package generated.kino.proxies;
@@ -48,13 +48,14 @@ public class VorfuehrungProxy implements IVorfuehrung{
          rs = DBExecuterFactory.getConfiguredFactory().getDBDMLExecuter().selectIdSpecifiedCursorAleadyAtFirstRow("Vorfuehrung", this.id);
          Film film = vorfuehrungFilmSupervisor.getInstance().getFilm(this).getTheObject();
          Saal saal = vorfuehrungSaalSupervisor.getInstance().getSaal(this).getTheObject();
+         Integer vorfuehrungsNummer = rs.getInt("vorfuehrungsNummer");
          Integer preisParkett = rs.getInt("preisParkett");
          Integer preisMitte = rs.getInt("preisMitte");
          Integer preisLoge = rs.getInt("preisLoge");
          Integer freiePlaetzeParkett = rs.getInt("freiePlaetzeParkett");
          Integer freiePlaetzeMitte = rs.getInt("freiePlaetzeMitte");
          Integer freiePlaetzeLoge = rs.getInt("freiePlaetzeLoge");
-         return Vorfuehrung.createAlreadyPersistent(this, film, saal, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge);
+         return Vorfuehrung.createAlreadyPersistent(this, film, saal, vorfuehrungsNummer, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge);
       } catch (Exception e) {throw new PersistenceException(e.getMessage());}
    }
    public Set<Resevierung> getReservierungen() throws PersistenceException{
@@ -77,6 +78,12 @@ public class VorfuehrungProxy implements IVorfuehrung{
    }
    public void setSaal(Saal newSaal)throws PersistenceException{
       this.getTheObject().setSaal(newSaal);
+   }
+   public Integer getVorfuehrungsNummer() {
+      return this.getTheObject().getVorfuehrungsNummer();
+   }
+   public void setVorfuehrungsNummer(Integer newVorfuehrungsNummer) throws PersistenceException{
+      this.getTheObject().setVorfuehrungsNummer(newVorfuehrungsNummer);
    }
    public Integer getPreisParkett() {
       return this.getTheObject().getPreisParkett();
