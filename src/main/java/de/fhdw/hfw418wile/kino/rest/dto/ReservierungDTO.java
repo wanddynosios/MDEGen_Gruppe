@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReservierungDTO {
+public class ReservierungDTO extends DTO{
     private String name;
     private VorfuehrungDTO vorfuehrungDTO;
     private KategorieDTO kategorieDTO;

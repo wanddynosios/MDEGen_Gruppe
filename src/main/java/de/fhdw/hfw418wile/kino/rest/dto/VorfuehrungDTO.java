@@ -10,7 +10,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class VorfuehrungDTO {
+public class VorfuehrungDTO extends DTO{
     private Integer vorfuehrungNummer;
     private Integer preisParkett;
     private Integer preisMitte;

@@ -8,6 +8,7 @@ import de.fhdw.hfw418wile.kino.rest.dto.SitzDTO;
 import generated.kino.Reihe;
 import generated.kino.Saal;
 import generated.kino.Sitz;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,27 +19,40 @@ import java.util.List;
 
 @RestController
 public class ErstelleSaalService {
-    @ResponseBody
     @PutMapping("/saal")
-    public SaalDTO erstelleSaal(@RequestBody SaalDTO saalDTO) throws PersistenceException {
+    public ResponseEntity<SaalDTO> erstelleSaal(@RequestBody SaalDTO saalDTO) {
         System.out.println(saalDTO);
         if (saalDTO.getReihen() == null)
             System.out.println("ERROR keine Reihen");
-        Saal saal = Saal.createFresh(saalDTO.getSaalNummer());
+        Saal saal = null;
+        try {
+            saal = Saal.createFresh(saalDTO.getSaalNummer());
+        } catch (PersistenceException e) {
+            saalDTO.setMessage("Saal nicht valide oder SaalNummer bereits vergeben");
+            return ResponseEntity.badRequest().body(saalDTO);
+        }
         for (ReiheDTO reiheDTO : saalDTO.getReihen()){
-            Reihe reihe = Reihe.createFresh(
-                    KategorieDTO.getKategroieForDTO(reiheDTO.getKategorieDTO()),
-                    reiheDTO.getReihenNummer());
+            Reihe reihe = null;
+            try {
+                reihe = Reihe.createFresh(
+                        KategorieDTO.getKategroieForDTO(reiheDTO.getKategorieDTO()),
+                        reiheDTO.getReihenNummer());
+            } catch (PersistenceException e) {
+                saalDTO.setMessage("Reihe "+reiheDTO.toString()+" konnte nicht persistiert werden");
+                return ResponseEntity.badRequest().body(saalDTO);
+            }
             List<Sitz> sitze = new ArrayList<>();
             for (SitzDTO sitzDTO : reiheDTO.getSitze()){
-                sitze.add(Sitz.createFresh(sitzDTO.getSitzNummer(), reihe));
+                try {
+                    sitze.add(Sitz.createFresh(sitzDTO.getSitzNummer(), reihe));
+                    saal.addToReihen(reihe);
+                } catch (PersistenceException e) {
+                    sitzDTO.setMessage("Sitz "+sitzDTO.toString()+" oder Reihe "+reiheDTO.toString()+" nicht valide");
+                    return ResponseEntity.badRequest().body(saalDTO);
+                }
             }
-            saal.addToReihen(reihe);
         }
-        System.out.println(saal.getSaalNummer());
-        System.out.println(saal.getReihen().get(0).toString());
-        System.out.println(saal.getReihen().get(1).toString());
-        return saalDTO;
+        return ResponseEntity.accepted().body(saalDTO);
 
     }
 

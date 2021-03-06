@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SaalDTO {
+public class SaalDTO extends DTO{
     @NotNull
     private Integer saalNummer;
     private List<ReiheDTO> reihen;

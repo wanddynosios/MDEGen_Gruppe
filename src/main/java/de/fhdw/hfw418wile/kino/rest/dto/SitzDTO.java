@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SitzDTO {
+public class SitzDTO extends DTO{
     private Integer sitzNummer;
 
     public SitzDTO(Integer sitzNummer) {

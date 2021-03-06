@@ -1,4 +1,4 @@
-/**--- Generated at Sat Mar 06 13:28:16 CET 2021 
+/**--- Generated at Sat Mar 06 15:22:39 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -108,5 +108,26 @@ public class Resevierung extends Observable implements java.io.Serializable, IRe
       return vorfuehrungReservierungenSupervisor.getInstance().getVorfuehrung(this).getTheObject();
    }
    //80 ===== Editable : Your Operations =============
+/**
+ * gibt die Anzahl der Plaetze Mitte
+ */
+   public Integer getAnzahlPlaetzeMitte(){
+      // TODO: Implement Operation getAnzahlPlaetzeMitte
+      return null;
+   }
+/**
+ * gibt die Anzahl der Plaetze Loge
+ */
+   public Integer getAnzahlPlaetzeLoge(){
+      // TODO: Implement Operation getAnzahlPlaetzeLoge
+      return null;
+   }
+/**
+ * gibt die Anzahl der Plaetze Parkett
+ */
+   public Integer getAnzahlPlaetzeParkett(){
+      // TODO: Implement Operation getAnzahlPlaetzeParkett
+      return null;
+   }
 //90 ===== GENERATED: End of Your Operations ======
 }

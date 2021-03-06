@@ -1,11 +1,11 @@
-/**--- Generated at Sat Mar 06 13:28:16 CET 2021 
+/**--- Generated at Sat Mar 06 15:22:39 CET 2021 
  * --- No Change Allowed!  
  */
 package generated.kino.commands;
 import generated.kino.*;
 import commands.*;
 public class Vorfuehrung_constructor_Command extends ServiceCommand<Vorfuehrung>{
-   private static final long serialVersionUID = -2076315999L;
+   private static final long serialVersionUID = 1440720286L;
    private Film film;
    private Saal saal;
    private Integer  vorfuehrungsNummer;

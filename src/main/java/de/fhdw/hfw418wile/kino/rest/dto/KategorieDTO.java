@@ -6,6 +6,7 @@ import generated.kino.KategorieLoge;
 import generated.kino.KategorieMitte;
 import generated.kino.KategorieParkett;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 
 
 @NoArgsConstructor
@@ -27,7 +28,8 @@ public enum KategorieDTO {
         }
     }
 
-    public static Kategorie getKategroieForDTO(KategorieDTO kategorieDTO) throws PersistenceException {
+    @SneakyThrows //Singleton.getInstance() sollte in der Regel keinen Fehler werfen
+    public static Kategorie getKategroieForDTO(KategorieDTO kategorieDTO) {
         switch (kategorieDTO){
             case KategorieParkett:
                 return generated.kino.KategorieParkett.getInstance();

@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReiheDTO {
+public class ReiheDTO extends DTO{
     private Integer reihenNummer;
     private KategorieDTO kategorieDTO;
     private List<SitzDTO> sitze;

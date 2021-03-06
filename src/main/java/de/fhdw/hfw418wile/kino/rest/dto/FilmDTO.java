@@ -8,8 +8,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FilmDTO {
+public class FilmDTO extends DTO{
     private String filmName;
+
+    public void setFilmName(String filmName) {
+        this.filmName = filmName.replace(" ", "_");
+    }
 
     public FilmDTO(String filmName) {
         this.filmName = filmName;

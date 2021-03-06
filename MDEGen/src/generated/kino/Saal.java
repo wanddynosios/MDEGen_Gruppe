@@ -1,4 +1,4 @@
-/**--- Generated at Sat Mar 06 13:28:16 CET 2021 
+/**--- Generated at Sat Mar 06 15:22:39 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -92,5 +92,26 @@ public class Saal extends Observable implements java.io.Serializable, ISaal
    }
    //80 ===== Editable : Your Operations =============
 
+/**
+ * holt anzahl plaetze Parkett
+ */
+   public Integer getAnzahlPlaetzeParkett(){
+      // TODO: Implement Operation getAnzahlPlaetzeParkett
+      return null;
+   }
+/**
+ * holt anzahl plaetze Loge
+ */
+   public Integer getAnzhalPlaetzeLoge(){
+      // TODO: Implement Operation getAnzhalPlaetzeLoge
+      return null;
+   }
+/**
+ * holt anzahl plaetze Mitte
+ */
+   public Integer getAnzahlPlaetzeMitte(){
+      // TODO: Implement Operation getAnzahlPlaetzeMitte
+      return null;
+   }
 //90 ===== GENERATED: End of Your Operations ======
 }

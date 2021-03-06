@@ -1,4 +1,4 @@
-/**--- Generated at Sat Mar 06 13:28:16 CET 2021 
+/**--- Generated at Sat Mar 06 15:22:39 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -211,24 +211,38 @@ public class Kino extends Observable{
 /**
  * holt den aktuellen Aufbau des Saals
  */
-   public Saal holeSaal(Integer saalNummer){
+   public Saal holeSaal(Integer saalNummer) throws NoSuchElementException {
+      try {
          Map<Integer, SaalProxy> saele = Kino.getInstance().getSaalCache();
          Map<Integer, Integer> saalNummernUndSaalIds = new HashMap<>();
          saele.forEach((saalId, saalProxy) ->
                  saalNummernUndSaalIds.put(saalProxy.getSaalNummer(), saalId));
          Integer saalId = saalNummernUndSaalIds.get(saalNummer);
-         return Kino.getInstance().getSaal(saalId);
+         Saal saal = Kino.getInstance().getSaal(saalId);
+         if (saal == null)
+            throw new NoSuchElementException();
+         return saal;
+      } catch (NullPointerException n){
+         throw new NoSuchElementException();
+      }
    }
 /**
  * holt die Vorfuehrung
  */
-   public Vorfuehrung holeVorfuehrung(Integer vorfuehrungNummer){
-      Map<Integer, VorfuehrungProxy> voerfuherungen = Kino.getInstance().getVorfuehrungCache();
-      Map<Integer, Integer> vorfuherungsNummernUndVorfIds = new HashMap<>();
-      voerfuherungen.forEach((vorfuehrungId, vorfuehrungProxy) ->
-              vorfuherungsNummernUndVorfIds.put(vorfuehrungProxy.getVorfuehrungsNummer(), vorfuehrungId));
-      Integer vorfuehrungId = vorfuherungsNummernUndVorfIds.get(vorfuehrungNummer);
-      return Kino.getInstance().getVorfuehrung(vorfuehrungId);
+   public Vorfuehrung holeVorfuehrung(Integer vorfuehrungNummer) throws NoSuchElementException{
+      try {
+         Map<Integer, VorfuehrungProxy> voerfuherungen = Kino.getInstance().getVorfuehrungCache();
+         Map<Integer, Integer> vorfuherungsNummernUndVorfIds = new HashMap<>();
+         voerfuherungen.forEach((vorfuehrungId, vorfuehrungProxy) ->
+                 vorfuherungsNummernUndVorfIds.put(vorfuehrungProxy.getVorfuehrungsNummer(), vorfuehrungId));
+         Integer vorfuehrungId = vorfuherungsNummernUndVorfIds.get(vorfuehrungNummer);
+         Vorfuehrung vorfuehrung = Kino.getInstance().getVorfuehrung(vorfuehrungId);
+         if (vorfuehrung == null)
+            throw new NoSuchElementException();
+         return vorfuehrung;
+      } catch (NullPointerException n){
+         throw new NoSuchElementException();
+      }
    }
 /**
  * erstellt einen Saal; komplett in Service implementiert
@@ -243,6 +257,24 @@ public class Kino extends Observable{
    public void reservierePlaetze(Resevierung reservierung){
       // TODO: Implement Operation reservierePlaetze
       return;
+   }
+/**
+ * Holt Film zum Namen
+ */
+   public Film holeFilm(String filmName)throws NoSuchElementException{
+      try {
+         Map<Integer, FilmProxy> filme = Kino.getInstance().getFilmCache();
+         Map<String, Integer> filmNamenundFilmIds = new HashMap<>();
+         filme.forEach((filmId, filmProxy) ->
+                 filmNamenundFilmIds.put(filmProxy.getFilmName(), filmId));
+         Integer filmId = filmNamenundFilmIds.get(filmName);
+         Film film = Kino.getInstance().getFilm(filmId);
+         if (film == null)
+            throw new NoSuchElementException();
+         return film;
+      } catch (NullPointerException n){
+         throw new NoSuchElementException();
+      }
    }
 //90 ===== GENERATED: End of Your Operations ======
 }

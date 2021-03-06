@@ -7,6 +7,7 @@ import de.fhdw.hfw418wile.kino.rest.dto.SaalDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.SitzDTO;
 import exceptions.ConstraintViolation;
 import generated.kino.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,9 +20,8 @@ import java.util.stream.Collectors;
 @RestController
 public class HoleSaalService {
 
-    @ResponseBody
     @GetMapping("/saal/{id}")
-    public SaalDTO holeSaal(@PathVariable Integer id) throws PersistenceException, ConstraintViolation {
+    public ResponseEntity<SaalDTO> holeSaal(@PathVariable Integer id) throws PersistenceException, ConstraintViolation {
         Reihe reiheX = Reihe.createFresh(
                 KategorieParkett.getInstance(),
                 1);
@@ -33,11 +33,21 @@ public class HoleSaalService {
         reiheXX.addToSitze(Sitz.createFresh(1, reiheXX));
         reiheXX.addToSitze(Sitz.createFresh(2, reiheXX));
         Saal.createFresh(1).addToReihen(reiheX);
-        Kino.getInstance().holeSaal(1).addToReihen(reiheXX);
+        try {
+            Kino.getInstance().holeSaal(1).addToReihen(reiheXX);
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
+        }
 
 
-
-        Saal saal =  Kino.getInstance().holeSaal(id);
+        Saal saal = null;
+        try {
+            saal = Kino.getInstance().holeSaal(id);
+        } catch (NoSuchElementException e) {
+            SaalDTO saalDTO = new SaalDTO();
+            saalDTO.setMessage("Saalnummer unbekannt");
+            return ResponseEntity.badRequest().body(saalDTO);
+        }
         SaalDTO saalDTO = new SaalDTO();
         saalDTO.setSaalNummer(saal.getSaalNummer());
         List<Reihe> reihen = saal.getReihen();
@@ -56,6 +66,6 @@ public class HoleSaalService {
                     sitzDTOs));
         }
         saalDTO.setReihen(reiheDTOs);
-        return saalDTO;
+        return ResponseEntity.accepted().body(saalDTO);
     }
 }

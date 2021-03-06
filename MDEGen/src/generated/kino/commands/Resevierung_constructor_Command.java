@@ -1,11 +1,11 @@
-/**--- Generated at Sat Mar 06 13:28:16 CET 2021 
+/**--- Generated at Sat Mar 06 15:22:39 CET 2021 
  * --- No Change Allowed!  
  */
 package generated.kino.commands;
 import generated.kino.*;
 import commands.*;
 public class Resevierung_constructor_Command extends ServiceCommand<Resevierung>{
-   private static final long serialVersionUID = -1173767960L;
+   private static final long serialVersionUID = 2080591082L;
    private Kategorie kategorie;
    private String  name;
    private Integer  anzahlPlaetze;
