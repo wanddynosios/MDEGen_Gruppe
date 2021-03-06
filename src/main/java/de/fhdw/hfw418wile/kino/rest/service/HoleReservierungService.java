@@ -5,7 +5,9 @@ import de.fhdw.hfw418wile.kino.rest.dto.KategorieDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.ReservierungDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.VorfuehrungDTO;
 import generated.kino.Kino;
+import generated.kino.NoSuchElementException;
 import generated.kino.Resevierung;
+import generated.kino.Vorfuehrung;
 import generated.kino.proxies.ResevierungProxy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,6 +64,36 @@ public class HoleReservierungService {
             reservierungDTO.setVorfuehrungDTO(vorfuehrungDTO);
         }
         return ResponseEntity.accepted().body(reservierungDTOs);
+    }
+
+    @GetMapping("/reservierung/{reservierungsName}")
+    public ResponseEntity<ReservierungDTO> holeReservierung(@PathVariable String reservierungsName){
+        ReservierungDTO reservierungDTO = new ReservierungDTO();
+        Resevierung resevierung;
+        try {
+            resevierung = Kino.getInstance().holeReservierung(reservierungsName);
+        } catch (NoSuchElementException e) {
+            reservierungDTO.setMessage("Reservierung unter solchem Namen unbekannt");
+            return ResponseEntity.badRequest().body(reservierungDTO);
+        }
+        reservierungDTO.setName(resevierung.getName());
+        try {
+            reservierungDTO.setKategorieDTO(KategorieDTO.getDTOForKategorie(resevierung.getKategorie()));
+        } catch (PersistenceException e) {
+            reservierungDTO.setMessage("Reservierung hat keine (valide) Kategorie");
+            return ResponseEntity.badRequest().body(reservierungDTO);
+        }
+        reservierungDTO.setAnzahlPlaetze(resevierung.getAnzahlPlaetze());
+        reservierungDTO.setIstBereitsEingeloest(resevierung.getIstBereitsEingeloest());
+        VorfuehrungDTO vorfuehrungDTO = new VorfuehrungDTO();
+        try {
+            vorfuehrungDTO.setVorfuehrungNummer(resevierung.getVorfuehrung().getVorfuehrungsNummer());
+        } catch (PersistenceException e) {
+            reservierungDTO.setMessage("Reservierung ist nicht richtig einer Vorfuehrung zugeordnet");
+            return ResponseEntity.badRequest().body(reservierungDTO);
+        }
+        reservierungDTO.setVorfuehrungDTO(vorfuehrungDTO);
+        return ResponseEntity.accepted().body(reservierungDTO);
     }
 
 

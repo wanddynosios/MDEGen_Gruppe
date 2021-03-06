@@ -6,13 +6,13 @@ import generated.kino.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ErstelleVorfuehrungService {
     @PutMapping("/vorfuehrung")
-    public ResponseEntity<VorfuehrungDTO> erstelleVorfuehrung(@RequestBody VorfuehrungDTO vorfuehrungDTO) throws PersistenceException {
+    public ResponseEntity<VorfuehrungDTO> erstelleVorfuehrung(@RequestBody VorfuehrungDTO vorfuehrungDTO){
+        System.out.println(vorfuehrungDTO.toString());
         boolean thrown = false;
         try {
             Kino.getInstance().holeVorfuehrung(vorfuehrungDTO.getVorfuehrungNummer());
@@ -38,21 +38,25 @@ public class ErstelleVorfuehrungService {
         } catch (NoSuchElementException e) {
             vorfuehrungDTO.setMessage("Saalnummer unbekannt");
             return ResponseEntity.badRequest().body(vorfuehrungDTO);
-
         }
-
-        Vorfuehrung.createFresh(
-                film,
-                saal,
-                vorfuehrungDTO.getVorfuehrungNummer(),
-                vorfuehrungDTO.getPreisParkett(),
-                vorfuehrungDTO.getPreisMitte(),
-                vorfuehrungDTO.getPreisLoge(),
-                saal.getAnzahlPlaetzeParkett(),
-                saal.getAnzahlPlaetzeMitte(),
-                saal.getAnzhalPlaetzeLoge(),
-                false
-        );
+        try {
+            Vorfuehrung.createFresh(
+                    film,
+                    saal,
+                    vorfuehrungDTO.getVorfuehrungNummer(),
+                    vorfuehrungDTO.getPreisParkett(),
+                    vorfuehrungDTO.getPreisMitte(),
+                    vorfuehrungDTO.getPreisLoge(),
+                    saal.getAnzahlPlaetzeParkett(),
+                    saal.getAnzahlPlaetzeMitte(),
+                    saal.getAnzhalPlaetzeLoge(),
+                    false
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            vorfuehrungDTO.setMessage("Vorfuehrung konnte nicht persistiert werden");
+            return ResponseEntity.badRequest().body(vorfuehrungDTO);
+        }
         System.out.println(vorfuehrungDTO);
     return ResponseEntity.accepted().body(vorfuehrungDTO);
     }

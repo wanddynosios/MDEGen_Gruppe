@@ -7,37 +7,53 @@ import de.fhdw.hfw418wile.kino.rest.dto.SaalDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.SitzDTO;
 import exceptions.ConstraintViolation;
 import generated.kino.*;
+import generated.kino.NoSuchElementException;
+import generated.kino.proxies.SaalProxy;
+import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
 public class HoleSaalService {
+    @GetMapping("/saal/all")
+    public ResponseEntity<Set<SaalDTO>> holeSaele(){
+        Map<Integer, SaalProxy> saalCache = Kino.getInstance().getSaalCache();
+        Set<Saal> saele = new HashSet<>();
+        saalCache.forEach((integer, saalProxy) -> saele.add(saalProxy.getTheObject()));
+        Set<SaalDTO> saalDTOs = new HashSet<>();
+        for (Saal saal : saele){
+            SaalDTO saalDTO = new SaalDTO();
+            saalDTO.setSaalNummer(saal.getSaalNummer());
+            saalDTOs.add(saalDTO);
+        }
+        return ResponseEntity.accepted().body(saalDTOs);
+
+    }
 
     @GetMapping("/saal/{id}")
-    public ResponseEntity<SaalDTO> holeSaal(@PathVariable Integer id) {
-//        Reihe reiheX = Reihe.createFresh(
-//                KategorieParkett.getInstance(),
-//                1);
-//        reiheX.addToSitze(Sitz.createFresh(1, reiheX));
-//        reiheX.addToSitze(Sitz.createFresh(2, reiheX));
-//        Reihe reiheXX = Reihe.createFresh(
-//                KategorieParkett.getInstance(),
-//                1);
-//        reiheXX.addToSitze(Sitz.createFresh(1, reiheXX));
-//        reiheXX.addToSitze(Sitz.createFresh(2, reiheXX));
-//        Saal.createFresh(1).addToReihen(reiheX);
-//        try {
-//            Kino.getInstance().holeSaal(1).addToReihen(reiheXX);
-//        } catch (NoSuchElementException e) {
-//            e.printStackTrace();
-//        }
+    public ResponseEntity<SaalDTO> holeSaal(@PathVariable Integer id) throws PersistenceException, ConstraintViolation {
+        Reihe reiheX = Reihe.createFresh(
+                KategorieParkett.getInstance(),
+                1);
+        reiheX.addToSitze(Sitz.createFresh(1, reiheX));
+        reiheX.addToSitze(Sitz.createFresh(2, reiheX));
+        Reihe reiheXX = Reihe.createFresh(
+                KategorieParkett.getInstance(),
+                1);
+        reiheXX.addToSitze(Sitz.createFresh(1, reiheXX));
+        reiheXX.addToSitze(Sitz.createFresh(2, reiheXX));
+        Saal.createFresh(1).addToReihen(reiheX);
+        try {
+            Kino.getInstance().holeSaal(1).addToReihen(reiheXX);
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
+        }
 
 
         Saal saal = null;

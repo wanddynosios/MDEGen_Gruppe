@@ -1,4 +1,4 @@
-/**--- Generated at Sat Mar 06 15:22:39 CET 2021 
+/**--- Generated at Sat Mar 06 17:55:51 CET 2021 
  * --- No Change Allowed!  
  */
 package generated.kino.proxies;
@@ -14,6 +14,7 @@ import generated.kino.Film;
 import generated.kino.relationControl.vorfuehrungFilmSupervisor;
 import generated.kino.Saal;
 import generated.kino.relationControl.vorfuehrungSaalSupervisor;
+import generated.kino.Buchung;
 public class VorfuehrungProxy implements IVorfuehrung{
    private Integer id;
    private Optional<Vorfuehrung> theObject;
@@ -79,6 +80,15 @@ public class VorfuehrungProxy implements IVorfuehrung{
    }
    public void setSaal(Saal newSaal)throws PersistenceException{
       this.getTheObject().setSaal(newSaal);
+   }
+   public Set<Buchung> getBuchungen() throws PersistenceException{
+      return this.getTheObject().getBuchungen();
+   }
+   public void addToBuchungen(Buchung arg) throws ConstraintViolation, PersistenceException{
+      this.getTheObject().addToBuchungen(arg);
+   }
+   public boolean removeFromBuchungen(Buchung arg) throws ConstraintViolation, PersistenceException{
+      return this.getTheObject().removeFromBuchungen(arg);
    }
    public Integer getVorfuehrungsNummer() {
       return this.getTheObject().getVorfuehrungsNummer();

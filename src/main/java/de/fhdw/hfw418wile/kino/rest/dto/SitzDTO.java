@@ -9,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SitzDTO extends DTO{
     private Integer sitzNummer;
+    private ReiheDTO reiheDTO;
 
     public SitzDTO(Integer sitzNummer) {
         this.sitzNummer = sitzNummer;
@@ -18,6 +19,7 @@ public class SitzDTO extends DTO{
     public String toString() {
         return "SitzDTO{" +
                 "sitzNummer=" + sitzNummer +
+                ", reiheDTO=" + reiheDTO +
                 '}';
     }
 }

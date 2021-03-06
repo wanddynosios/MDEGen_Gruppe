@@ -1,4 +1,4 @@
-/**--- Generated at Sat Mar 06 15:22:39 CET 2021 
+/**--- Generated at Sat Mar 06 17:55:51 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -95,23 +95,35 @@ public class Saal extends Observable implements java.io.Serializable, ISaal
 /**
  * holt anzahl plaetze Parkett
  */
-   public Integer getAnzahlPlaetzeParkett(){
-      // TODO: Implement Operation getAnzahlPlaetzeParkett
-      return null;
+   public Integer getAnzahlPlaetzeParkett() throws PersistenceException {
+      int anzahl = 0;
+      for (Reihe reihe : getReihen()){
+         if (reihe.getKategorie() instanceof KategorieParkett)
+            anzahl += reihe.getSitze().size();
+      }
+      return anzahl;
    }
 /**
  * holt anzahl plaetze Loge
  */
-   public Integer getAnzhalPlaetzeLoge(){
-      // TODO: Implement Operation getAnzhalPlaetzeLoge
-      return null;
+   public Integer getAnzhalPlaetzeLoge() throws PersistenceException {
+         int anzahl = 0;
+         for (Reihe reihe : getReihen()){
+            if (reihe.getKategorie() instanceof KategorieLoge)
+               anzahl += reihe.getSitze().size();
+         }
+      return anzahl;
    }
 /**
  * holt anzahl plaetze Mitte
  */
-   public Integer getAnzahlPlaetzeMitte(){
-      // TODO: Implement Operation getAnzahlPlaetzeMitte
-      return null;
+   public Integer getAnzahlPlaetzeMitte() throws PersistenceException {
+      int anzahl = 0;
+      for (Reihe reihe : getReihen()){
+         if (reihe.getKategorie() instanceof KategorieMitte)
+            anzahl += reihe.getSitze().size();
+      }
+      return anzahl;
    }
 //90 ===== GENERATED: End of Your Operations ======
 }

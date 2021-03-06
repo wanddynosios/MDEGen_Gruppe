@@ -1,4 +1,4 @@
-/**--- Generated at Sat Mar 06 15:22:40 CET 2021 
+/**--- Generated at Sat Mar 06 17:55:52 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -13,6 +13,10 @@ import observation.Observable;
 import generated.kino.proxies.IBuchungsEinheit;
 import db.executer.PersistenceException;
 import exceptions.ConstraintViolation;
+import generated.kino.relationControl.*;
+import generated.kino.proxies.*;
+import java.util.Set;
+import java.util.HashSet;
 //20 ===== Editable : Your Import Section =========
 
 //25 ===== GENERATED:      Header Section =========
@@ -20,32 +24,28 @@ public class BuchungsEinheit extends Observable implements java.io.Serializable,
 {
    //30 ===== GENERATED:      Attribute Section ======
    private Integer id;
-   private Integer reihenNr;
-   private Integer sitzNr;
    //40 ===== Editable : Your Attribute Section ======
    
    //50 ===== GENERATED:      Constructor ============
-   private BuchungsEinheit(Integer id, Integer reihenNr, Integer sitzNr, boolean objectOnly)
+   private BuchungsEinheit(Integer id, boolean objectOnly)
    {
       super();
       this.setId(id);
-      this.reihenNr = reihenNr;
-      this.sitzNr = sitzNr;
       if(objectOnly) return;
    }
    /** Caution: A Call to this Method Requires to add any newly instantiated Object to its Cache! */
-   public static BuchungsEinheit createAlreadyPersistent(BuchungsEinheitProxy proxy, Integer reihenNr, Integer sitzNr){
+   public static BuchungsEinheit createAlreadyPersistent(BuchungsEinheitProxy proxy){
       if(proxy.isObjectPresent()) return proxy.getTheObject();
-      return new BuchungsEinheit(proxy.getId(), reihenNr, sitzNr, true);
+      return new BuchungsEinheit(proxy.getId(), true);
    }
-   public static BuchungsEinheit createFresh(Integer reihenNr, Integer sitzNr)throws PersistenceException{
+   public static BuchungsEinheit createFresh()throws PersistenceException{
       db.executer.DBDMLExecuter dmlExecuter = PersistenceExecuterFactory.getConfiguredFactory().getDBDMLExecuter();
       Integer id = dmlExecuter.getNextId();
       try{
-         dmlExecuter.insertInto("BuchungsEinheit", "id, typeKey, reihenNr, sitzNr", 
-         id.toString() + ", " + TypeKeyManager.getTheInstance().getTypeKey("Kino", "BuchungsEinheit").toString() + ", " + reihenNr.toString() + ", " + sitzNr.toString());
+         dmlExecuter.insertInto("BuchungsEinheit", "id, typeKey", 
+         id.toString() + ", " + TypeKeyManager.getTheInstance().getTypeKey("Kino", "BuchungsEinheit").toString());
       }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
-      BuchungsEinheit me = new BuchungsEinheit(id, reihenNr, sitzNr, false);
+      BuchungsEinheit me = new BuchungsEinheit(id, false);
       Kino.getInstance().addBuchungsEinheitProxy(new BuchungsEinheitProxy(me));
       return me;
    }
@@ -66,21 +66,16 @@ public class BuchungsEinheit extends Observable implements java.io.Serializable,
       return ((IBuchungsEinheit)o).getId().equals(this.getId());
    }
    public int hashCode() {return this.getId().hashCode();}
-   public Integer getReihenNr() {
-      return this.reihenNr;
+   public Set<Sitz> getSitz() throws PersistenceException{
+      Set<Sitz> result = new HashSet<>();
+      for (ISitz i : buchungseinheitSitzeSupervisor.getInstance().getSitz(this)) result.add(i.getTheObject());
+      return result;
    }
-   public void setReihenNr(Integer newReihenNr) throws PersistenceException{
-      this.reihenNr = newReihenNr;
-      try{PersistenceExecuterFactory.getConfiguredFactory().getDBDMLExecuter().update("BuchungsEinheit", "reihenNr", newReihenNr.toString(), this.getId());
-      }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
+   public void addToSitz(Sitz arg) throws PersistenceException{
+      buchungseinheitSitzeSupervisor.getInstance().add(this, arg);
    }
-   public Integer getSitzNr() {
-      return this.sitzNr;
-   }
-   public void setSitzNr(Integer newSitzNr) throws PersistenceException{
-      this.sitzNr = newSitzNr;
-      try{PersistenceExecuterFactory.getConfiguredFactory().getDBDMLExecuter().update("BuchungsEinheit", "sitzNr", newSitzNr.toString(), this.getId());
-      }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
+   public boolean removeFromSitz(Sitz arg) throws PersistenceException{
+      return buchungseinheitSitzeSupervisor.getInstance().remove(this, arg);
    }
    //80 ===== Editable : Your Operations =============
 //90 ===== GENERATED: End of Your Operations ======

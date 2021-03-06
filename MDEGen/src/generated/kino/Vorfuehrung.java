@@ -1,4 +1,4 @@
-/**--- Generated at Sat Mar 06 15:22:39 CET 2021 
+/**--- Generated at Sat Mar 06 17:55:51 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -107,6 +107,17 @@ public class Vorfuehrung extends Observable implements java.io.Serializable, IVo
    }
    public void setSaal(Saal newSaal)throws PersistenceException{
       vorfuehrungSaalSupervisor.getInstance().change(this, this.getSaal(), newSaal);
+   }
+   public Set<Buchung> getBuchungen() throws PersistenceException{
+      Set<Buchung> result = new HashSet<>();
+      for (IBuchung i : vorfuehrungBuchungenSupervisor.getInstance().getBuchungen(this)) result.add(i.getTheObject());
+      return result;
+   }
+   public void addToBuchungen(Buchung arg) throws ConstraintViolation, PersistenceException{
+      vorfuehrungBuchungenSupervisor.getInstance().add(this, arg);
+   }
+   public boolean removeFromBuchungen(Buchung arg) throws ConstraintViolation, PersistenceException{
+      return vorfuehrungBuchungenSupervisor.getInstance().remove(this, arg);
    }
    public Integer getVorfuehrungsNummer() {
       return this.vorfuehrungsNummer;
