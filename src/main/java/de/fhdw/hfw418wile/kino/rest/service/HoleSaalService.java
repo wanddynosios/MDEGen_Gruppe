@@ -21,23 +21,23 @@ import java.util.stream.Collectors;
 public class HoleSaalService {
 
     @GetMapping("/saal/{id}")
-    public ResponseEntity<SaalDTO> holeSaal(@PathVariable Integer id) throws PersistenceException, ConstraintViolation {
-        Reihe reiheX = Reihe.createFresh(
-                KategorieParkett.getInstance(),
-                1);
-        reiheX.addToSitze(Sitz.createFresh(1, reiheX));
-        reiheX.addToSitze(Sitz.createFresh(2, reiheX));
-        Reihe reiheXX = Reihe.createFresh(
-                KategorieParkett.getInstance(),
-                1);
-        reiheXX.addToSitze(Sitz.createFresh(1, reiheXX));
-        reiheXX.addToSitze(Sitz.createFresh(2, reiheXX));
-        Saal.createFresh(1).addToReihen(reiheX);
-        try {
-            Kino.getInstance().holeSaal(1).addToReihen(reiheXX);
-        } catch (NoSuchElementException e) {
-            e.printStackTrace();
-        }
+    public ResponseEntity<SaalDTO> holeSaal(@PathVariable Integer id) {
+//        Reihe reiheX = Reihe.createFresh(
+//                KategorieParkett.getInstance(),
+//                1);
+//        reiheX.addToSitze(Sitz.createFresh(1, reiheX));
+//        reiheX.addToSitze(Sitz.createFresh(2, reiheX));
+//        Reihe reiheXX = Reihe.createFresh(
+//                KategorieParkett.getInstance(),
+//                1);
+//        reiheXX.addToSitze(Sitz.createFresh(1, reiheXX));
+//        reiheXX.addToSitze(Sitz.createFresh(2, reiheXX));
+//        Saal.createFresh(1).addToReihen(reiheX);
+//        try {
+//            Kino.getInstance().holeSaal(1).addToReihen(reiheXX);
+//        } catch (NoSuchElementException e) {
+//            e.printStackTrace();
+//        }
 
 
         Saal saal = null;
@@ -50,20 +50,37 @@ public class HoleSaalService {
         }
         SaalDTO saalDTO = new SaalDTO();
         saalDTO.setSaalNummer(saal.getSaalNummer());
-        List<Reihe> reihen = saal.getReihen();
+        List<Reihe> reihen = null;
+        try {
+            reihen = saal.getReihen();
+        } catch (PersistenceException e) {
+            saalDTO.setMessage("Persistenzfehler bei den Reihen des Saals "+saalDTO.toString());
+            return ResponseEntity.badRequest().body(saalDTO);
+        }
         List<ReiheDTO> reiheDTOs = new ArrayList<>();
         for (Reihe reihe : reihen){
-            List<Sitz> sitze = reihe.getSitze().stream()
-                    .distinct()
-                    .collect(Collectors.toList());
+            List<Sitz> sitze = null;
+            try {
+                sitze = reihe.getSitze().stream()
+                        .distinct()
+                        .collect(Collectors.toList());
+            } catch (PersistenceException e) {
+                saalDTO.setMessage("Persistenzfehler bei den Sitzen der Reihe "+reihe.toString());
+                return ResponseEntity.badRequest().body(saalDTO);
+            }
             List<SitzDTO> sitzDTOs = new ArrayList<>();
             for (Sitz sitz : sitze){
                 sitzDTOs.add(new SitzDTO(sitz.getSitzNummer()));
             }
-            reiheDTOs.add(new ReiheDTO(
-                    reihe.getReihenNummer(),
-                    KategorieDTO.getDTOForKategorie(reihe.getKategorie()),
-                    sitzDTOs));
+            try {
+                reiheDTOs.add(new ReiheDTO(
+                        reihe.getReihenNummer(),
+                        KategorieDTO.getDTOForKategorie(reihe.getKategorie()),
+                        sitzDTOs));
+            } catch (PersistenceException e) {
+                saalDTO.setMessage("Reihe "+reihe.toString()+" hat keine (valide) Kategorie");
+                return ResponseEntity.badRequest().body(saalDTO);
+            }
         }
         saalDTO.setReihen(reiheDTOs);
         return ResponseEntity.accepted().body(saalDTO);

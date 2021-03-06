@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
-public class HoleVorfuehrung {
+public class HoleVorfuehrungService {
     @GetMapping("/vorfuehrung/all")
     public ResponseEntity<Set<VorfuehrungDTO>> getVorfuehrungen() throws PersistenceException {
         Map<Integer, VorfuehrungProxy> vorfuehrungCache = Kino.getInstance().getVorfuehrungCache();
