@@ -1,5 +1,6 @@
 package de.fhdw.hfw418wile.kino.rest.dto;
 
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,11 @@ public class ReservierungDTO {
     private VorfuehrungDTO vorfuehrungDTO;
     private KategorieDTO kategorieDTO;
     private Integer anzahlPlaetze;
+    private boolean istBereitsEingeloest;
+
+    public ReservierungDTO(String name) {
+        this.name = name;
+    }
 
     @Override
     public String toString() {
@@ -20,6 +26,7 @@ public class ReservierungDTO {
                 ", vorfuehrungDTO=" + vorfuehrungDTO +
                 ", kategorieDTO=" + kategorieDTO +
                 ", anzahlPlaetze=" + anzahlPlaetze +
+                ", istBereitsEingeloest=" + istBereitsEingeloest +
                 '}';
     }
 }

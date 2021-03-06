@@ -1,5 +1,6 @@
 package de.fhdw.hfw418wile.kino.rest.dto;
 
+import generated.kino.Reihe;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,5 +19,17 @@ public class ReiheDTO {
         this.reihenNummer = reihenNummer;
         this.kategorieDTO = kategorieDTO;
         this.sitze = sitze;
+    }
+    public ReiheDTO(Reihe reihe){
+
+    }
+
+    @Override
+    public String toString() {
+        return "ReiheDTO{" +
+                "reihenNummer=" + reihenNummer +
+                ", kategorieDTO=" + kategorieDTO +
+                ", sitze=" + sitze +
+                '}';
     }
 }

@@ -1,4 +1,4 @@
-/**--- Generated at Fri Mar 05 18:16:22 CET 2021 
+/**--- Generated at Sat Mar 06 13:28:16 CET 2021 
  * --- No Change Allowed!  
  */
 package generated.kino.proxies;
@@ -55,7 +55,8 @@ public class VorfuehrungProxy implements IVorfuehrung{
          Integer freiePlaetzeParkett = rs.getInt("freiePlaetzeParkett");
          Integer freiePlaetzeMitte = rs.getInt("freiePlaetzeMitte");
          Integer freiePlaetzeLoge = rs.getInt("freiePlaetzeLoge");
-         return Vorfuehrung.createAlreadyPersistent(this, film, saal, vorfuehrungsNummer, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge);
+         Boolean bereitsVorbei = rs.getBoolean("bereitsVorbei");
+         return Vorfuehrung.createAlreadyPersistent(this, film, saal, vorfuehrungsNummer, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge, bereitsVorbei);
       } catch (Exception e) {throw new PersistenceException(e.getMessage());}
    }
    public Set<Resevierung> getReservierungen() throws PersistenceException{
@@ -120,5 +121,11 @@ public class VorfuehrungProxy implements IVorfuehrung{
    }
    public void setFreiePlaetzeLoge(Integer newFreiePlaetzeLoge) throws PersistenceException{
       this.getTheObject().setFreiePlaetzeLoge(newFreiePlaetzeLoge);
+   }
+   public Boolean getBereitsVorbei() {
+      return this.getTheObject().getBereitsVorbei();
+   }
+   public void setBereitsVorbei(Boolean newBereitsVorbei) throws PersistenceException{
+      this.getTheObject().setBereitsVorbei(newBereitsVorbei);
    }
 }

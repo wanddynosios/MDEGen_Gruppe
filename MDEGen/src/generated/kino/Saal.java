@@ -1,4 +1,4 @@
-/**--- Generated at Fri Mar 05 18:16:22 CET 2021 
+/**--- Generated at Sat Mar 06 13:28:16 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -91,5 +91,6 @@ public class Saal extends Observable implements java.io.Serializable, ISaal
       }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
    }
    //80 ===== Editable : Your Operations =============
+
 //90 ===== GENERATED: End of Your Operations ======
 }

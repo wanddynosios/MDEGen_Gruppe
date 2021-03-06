@@ -1,4 +1,4 @@
-/**--- Generated at Fri Mar 05 18:16:22 CET 2021 
+/**--- Generated at Sat Mar 06 13:28:16 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -32,10 +32,11 @@ public class Vorfuehrung extends Observable implements java.io.Serializable, IVo
    private Integer freiePlaetzeParkett;
    private Integer freiePlaetzeMitte;
    private Integer freiePlaetzeLoge;
+   private Boolean bereitsVorbei;
    //40 ===== Editable : Your Attribute Section ======
    
    //50 ===== GENERATED:      Constructor ============
-   private Vorfuehrung(Integer id, Film film, Saal saal, Integer vorfuehrungsNummer, Integer preisParkett, Integer preisMitte, Integer preisLoge, Integer freiePlaetzeParkett, Integer freiePlaetzeMitte, Integer freiePlaetzeLoge, boolean objectOnly)
+   private Vorfuehrung(Integer id, Film film, Saal saal, Integer vorfuehrungsNummer, Integer preisParkett, Integer preisMitte, Integer preisLoge, Integer freiePlaetzeParkett, Integer freiePlaetzeMitte, Integer freiePlaetzeLoge, Boolean bereitsVorbei, boolean objectOnly)
    throws PersistenceException{
       super();
       this.setId(id);
@@ -48,21 +49,22 @@ public class Vorfuehrung extends Observable implements java.io.Serializable, IVo
       this.freiePlaetzeParkett = freiePlaetzeParkett;
       this.freiePlaetzeMitte = freiePlaetzeMitte;
       this.freiePlaetzeLoge = freiePlaetzeLoge;
+      this.bereitsVorbei = bereitsVorbei;
       if(objectOnly) return;
    }
    /** Caution: A Call to this Method Requires to add any newly instantiated Object to its Cache! */
-   public static Vorfuehrung createAlreadyPersistent(VorfuehrungProxy proxy, Film film, Saal saal, Integer vorfuehrungsNummer, Integer preisParkett, Integer preisMitte, Integer preisLoge, Integer freiePlaetzeParkett, Integer freiePlaetzeMitte, Integer freiePlaetzeLoge)throws PersistenceException{
+   public static Vorfuehrung createAlreadyPersistent(VorfuehrungProxy proxy, Film film, Saal saal, Integer vorfuehrungsNummer, Integer preisParkett, Integer preisMitte, Integer preisLoge, Integer freiePlaetzeParkett, Integer freiePlaetzeMitte, Integer freiePlaetzeLoge, Boolean bereitsVorbei)throws PersistenceException{
       if(proxy.isObjectPresent()) return proxy.getTheObject();
-      return new Vorfuehrung(proxy.getId(), film, saal, vorfuehrungsNummer, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge, true);
+      return new Vorfuehrung(proxy.getId(), film, saal, vorfuehrungsNummer, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge, bereitsVorbei, true);
    }
-   public static Vorfuehrung createFresh(Film film, Saal saal, Integer vorfuehrungsNummer, Integer preisParkett, Integer preisMitte, Integer preisLoge, Integer freiePlaetzeParkett, Integer freiePlaetzeMitte, Integer freiePlaetzeLoge)throws PersistenceException{
+   public static Vorfuehrung createFresh(Film film, Saal saal, Integer vorfuehrungsNummer, Integer preisParkett, Integer preisMitte, Integer preisLoge, Integer freiePlaetzeParkett, Integer freiePlaetzeMitte, Integer freiePlaetzeLoge, Boolean bereitsVorbei)throws PersistenceException{
       db.executer.DBDMLExecuter dmlExecuter = PersistenceExecuterFactory.getConfiguredFactory().getDBDMLExecuter();
       Integer id = dmlExecuter.getNextId();
       try{
-         dmlExecuter.insertInto("Vorfuehrung", "id, typeKey, vorfuehrungsNummer, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge", 
-         id.toString() + ", " + TypeKeyManager.getTheInstance().getTypeKey("Kino", "Vorfuehrung").toString() + ", " + vorfuehrungsNummer.toString() + ", " + preisParkett.toString() + ", " + preisMitte.toString() + ", " + preisLoge.toString() + ", " + freiePlaetzeParkett.toString() + ", " + freiePlaetzeMitte.toString() + ", " + freiePlaetzeLoge.toString());
+         dmlExecuter.insertInto("Vorfuehrung", "id, typeKey, vorfuehrungsNummer, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge, bereitsVorbei", 
+         id.toString() + ", " + TypeKeyManager.getTheInstance().getTypeKey("Kino", "Vorfuehrung").toString() + ", " + vorfuehrungsNummer.toString() + ", " + preisParkett.toString() + ", " + preisMitte.toString() + ", " + preisLoge.toString() + ", " + freiePlaetzeParkett.toString() + ", " + freiePlaetzeMitte.toString() + ", " + freiePlaetzeLoge.toString() + ", " + bereitsVorbei.toString());
       }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
-      Vorfuehrung me = new Vorfuehrung(id, film, saal, vorfuehrungsNummer, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge, false);
+      Vorfuehrung me = new Vorfuehrung(id, film, saal, vorfuehrungsNummer, preisParkett, preisMitte, preisLoge, freiePlaetzeParkett, freiePlaetzeMitte, freiePlaetzeLoge, bereitsVorbei, false);
       Kino.getInstance().addVorfuehrungProxy(new VorfuehrungProxy(me));
       return me;
    }
@@ -160,6 +162,14 @@ public class Vorfuehrung extends Observable implements java.io.Serializable, IVo
    public void setFreiePlaetzeLoge(Integer newFreiePlaetzeLoge) throws PersistenceException{
       this.freiePlaetzeLoge = newFreiePlaetzeLoge;
       try{PersistenceExecuterFactory.getConfiguredFactory().getDBDMLExecuter().update("Vorfuehrung", "freiePlaetzeLoge", newFreiePlaetzeLoge.toString(), this.getId());
+      }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
+   }
+   public Boolean getBereitsVorbei() {
+      return this.bereitsVorbei;
+   }
+   public void setBereitsVorbei(Boolean newBereitsVorbei) throws PersistenceException{
+      this.bereitsVorbei = newBereitsVorbei;
+      try{PersistenceExecuterFactory.getConfiguredFactory().getDBDMLExecuter().update("Vorfuehrung", "bereitsVorbei", newBereitsVorbei.toString(), this.getId());
       }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
    }
    //80 ===== Editable : Your Operations =============

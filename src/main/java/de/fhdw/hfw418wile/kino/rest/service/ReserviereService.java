@@ -23,7 +23,8 @@ public class ReserviereService {
                 32,
                 55,
                 12,
-                9
+                9,
+                false
         );
 
         Integer vorfuherungNummer = reservierungDTO.getVorfuehrungDTO().getVorfuehrungNummer();

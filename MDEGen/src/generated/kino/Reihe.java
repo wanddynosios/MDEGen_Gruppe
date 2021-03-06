@@ -1,4 +1,4 @@
-/**--- Generated at Fri Mar 05 18:16:22 CET 2021 
+/**--- Generated at Sat Mar 06 13:28:16 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -95,5 +95,16 @@ public class Reihe extends Observable implements java.io.Serializable, IReihe
       }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
    }
    //80 ===== Editable : Your Operations =============
+
+   @lombok.SneakyThrows
+   @Override
+   public String toString() {
+      return "Reihe{" +
+              "reihenNummer=" + reihenNummer +
+              ", kategorie=" + getKategorie().getTheObject() +
+              ", sitze=" + getSitze().get(0) +
+              '}';
+   }
+
 //90 ===== GENERATED: End of Your Operations ======
 }

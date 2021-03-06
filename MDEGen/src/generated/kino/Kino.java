@@ -1,4 +1,4 @@
-/**--- Generated at Fri Mar 05 18:16:22 CET 2021 
+/**--- Generated at Sat Mar 06 13:28:16 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -229,6 +229,20 @@ public class Kino extends Observable{
               vorfuherungsNummernUndVorfIds.put(vorfuehrungProxy.getVorfuehrungsNummer(), vorfuehrungId));
       Integer vorfuehrungId = vorfuherungsNummernUndVorfIds.get(vorfuehrungNummer);
       return Kino.getInstance().getVorfuehrung(vorfuehrungId);
+   }
+/**
+ * erstellt einen Saal; komplett in Service implementiert
+ */
+   public void erstelleSaal(Saal saal){
+      // TODO: Implement Operation erstelleSaal
+      return;
+   }
+/**
+ * reserviere Plaetzte; komplett in Service implementiert
+ */
+   public void reservierePlaetze(Resevierung reservierung){
+      // TODO: Implement Operation reservierePlaetze
+      return;
    }
 //90 ===== GENERATED: End of Your Operations ======
 }

@@ -1,4 +1,4 @@
-/**--- Generated at Fri Mar 05 18:16:22 CET 2021 
+/**--- Generated at Sat Mar 06 13:28:16 CET 2021 
  * --- No Change Allowed!  
  */
 package generated.kino.proxies;
@@ -34,4 +34,6 @@ public interface IVorfuehrung extends Identifiable{
    public void setFreiePlaetzeMitte(Integer newFreiePlaetzeMitte) throws PersistenceException;
    public Integer getFreiePlaetzeLoge() ;
    public void setFreiePlaetzeLoge(Integer newFreiePlaetzeLoge) throws PersistenceException;
+   public Boolean getBereitsVorbei() ;
+   public void setBereitsVorbei(Boolean newBereitsVorbei) throws PersistenceException;
 }

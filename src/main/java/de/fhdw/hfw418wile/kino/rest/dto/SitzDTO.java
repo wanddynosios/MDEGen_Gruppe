@@ -13,4 +13,11 @@ public class SitzDTO {
     public SitzDTO(Integer sitzNummer) {
         this.sitzNummer = sitzNummer;
     }
+
+    @Override
+    public String toString() {
+        return "SitzDTO{" +
+                "sitzNummer=" + sitzNummer +
+                '}';
+    }
 }

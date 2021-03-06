@@ -1,11 +1,11 @@
-/**--- Generated at Fri Mar 05 18:16:22 CET 2021 
+/**--- Generated at Sat Mar 06 13:28:16 CET 2021 
  * --- No Change Allowed!  
  */
 package generated.kino.commands;
 import generated.kino.*;
 import commands.*;
 public class Sitz_constructor_Command extends ServiceCommand<Sitz>{
-   private static final long serialVersionUID = -910677919L;
+   private static final long serialVersionUID = 1125192811L;
    private Integer  sitzNummer;
    private Reihe  reihe;
    public Sitz_constructor_Command(Integer  sitzNummer, Reihe  reihe){
