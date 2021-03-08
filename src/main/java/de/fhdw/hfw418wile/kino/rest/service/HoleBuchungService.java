@@ -72,6 +72,14 @@ public class HoleBuchungService {
     @GetMapping("/buchung/all/{vorfuehrungsNummer}")
     public ResponseEntity<Set<BuchungDTO>> holeBuchungen(@PathVariable Integer vorfuehrungsNummer){
         Set<BuchungDTO> buchungDTOs = new HashSet<>();
+        try {
+            Kino.getInstance().holeVorfuehrung(vorfuehrungsNummer);
+        } catch (NoSuchElementException e){
+            BuchungDTO buchungDTO = new BuchungDTO();
+            buchungDTO.setMessage("Diese vorfuehrungsnummer ist nicht bekannt");
+            buchungDTOs.add(buchungDTO);
+            return ResponseEntity.badRequest().body(buchungDTOs);
+        }
         Map<Integer, BuchungProxy> buchungCache = Kino.getInstance().getBuchungCache();
         Set<Buchung> buchungen = new HashSet<>();
         AtomicReference<Boolean> thrown = new AtomicReference<>(false);

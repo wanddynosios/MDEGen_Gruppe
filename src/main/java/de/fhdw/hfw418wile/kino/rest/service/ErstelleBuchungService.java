@@ -28,14 +28,14 @@ public class ErstelleBuchungService {
                 return ResponseEntity.badRequest().body(buchungDTO);
             }
         }
-        Vorfuehrung vorfuehrung = null;
+        Vorfuehrung vorfuehrung;
         try {
             vorfuehrung = Kino.getInstance().holeVorfuehrung(buchungDTO.getVorfuehrungDTO().getVorfuehrungNummer());
         } catch (NoSuchElementException e) {
             buchungDTO.setMessage("Vorfuehrungsnummer unbekannt");
             return ResponseEntity.badRequest().body(buchungDTO);
         }
-        Buchung buchung = null;
+        Buchung buchung;
         try {
             buchung = Buchung.createFresh(
                     buchungDTO.getBuchungsNummer(),
@@ -45,7 +45,7 @@ public class ErstelleBuchungService {
             buchungDTO.setMessage("Buchung konnte nicht persisitert werden");
             return ResponseEntity.badRequest().body(buchungDTO);
         }
-        Resevierung resevierung = null;
+        Resevierung resevierung;
         try {
             resevierung = Kino.getInstance().holeReservierung(buchungDTO.getReservierungDTO().getName());
         } catch (NoSuchElementException e) {
@@ -55,7 +55,7 @@ public class ErstelleBuchungService {
         for (BuchungseinheitDTO buchungseinheitDTO : buchungDTO.getBuchungseinheitDTOs()){
             int reihenNummer = buchungseinheitDTO.getSitzDTO().getReiheDTO().getReihenNummer();
             int sitzNummer = buchungseinheitDTO.getSitzDTO().getSitzNummer();
-            Sitz sitz = null;
+            Sitz sitz;
             try {
                 sitz = vorfuehrung.getSaal().getReihen().get(reihenNummer-1).getSitze().get(sitzNummer-1);
             } catch (PersistenceException e) {
@@ -65,7 +65,7 @@ public class ErstelleBuchungService {
                 buchungDTO.setMessage("Die/der gewuenschte Reihe/Sitz existiert nicht");
                 return ResponseEntity.badRequest().body(buchungDTO);
             }
-            BuchungsEinheit buchungsEinheit = null;
+            BuchungsEinheit buchungsEinheit;
             try {
                 buchungsEinheit = BuchungsEinheit.createFresh(sitz);
             } catch (PersistenceException e) {

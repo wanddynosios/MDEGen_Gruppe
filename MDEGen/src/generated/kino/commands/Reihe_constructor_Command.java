@@ -1,11 +1,11 @@
-/**--- Generated at Mon Mar 08 12:14:37 CET 2021 
+/**--- Generated at Mon Mar 08 14:44:48 CET 2021 
  * --- No Change Allowed!  
  */
 package generated.kino.commands;
 import generated.kino.*;
 import commands.*;
 public class Reihe_constructor_Command extends ServiceCommand<Reihe>{
-   private static final long serialVersionUID = 75462289L;
+   private static final long serialVersionUID = -1312834364L;
    private Kategorie kategorie;
    private Integer  reihenNummer;
    public Reihe_constructor_Command(Kategorie kategorie, Integer  reihenNummer){

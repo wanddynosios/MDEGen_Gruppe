@@ -7,7 +7,6 @@ import de.fhdw.hfw418wile.kino.rest.dto.VorfuehrungDTO;
 import generated.kino.Kino;
 import generated.kino.NoSuchElementException;
 import generated.kino.Resevierung;
-import generated.kino.Vorfuehrung;
 import generated.kino.proxies.ResevierungProxy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +20,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class HoleReservierungService {
     @GetMapping("/reservierung/all/{vorfuehrungsNummer}")
     public ResponseEntity<Set<ReservierungDTO>> holeReservierungen(@PathVariable Integer vorfuehrungsNummer){
+        Set<ReservierungDTO> reservierungDTOs = new HashSet<>();
+        try {
+            Kino.getInstance().holeVorfuehrung(vorfuehrungsNummer);
+        } catch (NoSuchElementException e){
+            ReservierungDTO reservierungDTO = new ReservierungDTO();
+            reservierungDTO.setMessage("Diese vorfuehrungsnummer ist nicht bekannt");
+            reservierungDTOs.add(reservierungDTO);
+            return ResponseEntity.badRequest().body(reservierungDTOs);
+        }
         Map<Integer, ResevierungProxy> reservierungCache = Kino.getInstance().getResevierungCache();
         Map<Integer, Integer> reservierungsIdsToVorfuehrNummer = new HashMap<>();
         AtomicBoolean thrown = new AtomicBoolean(false);
@@ -38,12 +46,10 @@ public class HoleReservierungService {
         if (thrown.get()){
             ReservierungDTO reservierungDTO = new ReservierungDTO();
             reservierungDTO.setMessage("Eine Reservierung hat keine zugeordnete Vorfuehrung");
-            Set<ReservierungDTO> reservierungDTOs = new HashSet<ReservierungDTO>();
             reservierungDTOs.add(reservierungDTO);
             return ResponseEntity.badRequest().body(reservierungDTOs);
         }
         Set<Integer> reservierungsIds = getKeysByValue(reservierungsIdsToVorfuehrNummer, vorfuehrungsNummer);
-        Set<ReservierungDTO> reservierungDTOs = new HashSet<>();
         for (Integer reservierungsId : reservierungsIds){
             ReservierungDTO reservierungDTO = new ReservierungDTO();
             Resevierung resevierung = null;

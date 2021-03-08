@@ -6,14 +6,12 @@ import de.fhdw.hfw418wile.kino.rest.dto.ReiheDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.SaalDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.SitzDTO;
 import exceptions.ConstraintViolation;
-import generated.kino.*;
 import generated.kino.NoSuchElementException;
+import generated.kino.*;
 import generated.kino.proxies.SaalProxy;
-import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
@@ -56,7 +54,7 @@ public class HoleSaalService {
         }
 
 
-        Saal saal = null;
+        Saal saal;
         try {
             saal = Kino.getInstance().holeSaal(id);
         } catch (NoSuchElementException e) {
@@ -66,7 +64,7 @@ public class HoleSaalService {
         }
         SaalDTO saalDTO = new SaalDTO();
         saalDTO.setSaalNummer(saal.getSaalNummer());
-        List<Reihe> reihen = null;
+        List<Reihe> reihen;
         try {
             reihen = saal.getReihen();
         } catch (PersistenceException e) {
@@ -75,7 +73,7 @@ public class HoleSaalService {
         }
         List<ReiheDTO> reiheDTOs = new ArrayList<>();
         for (Reihe reihe : reihen){
-            List<Sitz> sitze = null;
+            List<Sitz> sitze;
             try {
                 sitze = reihe.getSitze().stream()
                         .distinct()

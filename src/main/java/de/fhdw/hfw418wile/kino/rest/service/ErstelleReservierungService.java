@@ -1,10 +1,8 @@
 package de.fhdw.hfw418wile.kino.rest.service;
 
 import db.executer.PersistenceException;
-import de.fhdw.hfw418wile.kino.rest.dto.FilmDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.KategorieDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.ReservierungDTO;
-import de.fhdw.hfw418wile.kino.rest.dto.VorfuehrungDTO;
 import exceptions.ConstraintViolation;
 import generated.kino.*;
 import org.springframework.http.ResponseEntity;
@@ -14,21 +12,8 @@ import org.springframework.web.bind.annotation.*;
 public class ErstelleReservierungService {
     @PutMapping("/reservierung")
     public ResponseEntity<ReservierungDTO> reserviere(@RequestBody ReservierungDTO reservierungDTO){
-//        Vorfuehrung vorfuehrungX = Vorfuehrung.createFresh(
-//                Film.createFresh("STARWARS"),
-//                Saal.createFresh(1),
-//                5669,
-//                4,
-//                5,
-//                32,
-//                55,
-//                12,
-//                9,
-//                false
-//        );
-
         Integer vorfuherungNummer = reservierungDTO.getVorfuehrungDTO().getVorfuehrungNummer();
-        Vorfuehrung vorfuehrung = null;
+        Vorfuehrung vorfuehrung;
         try {
             vorfuehrung = Kino.getInstance().holeVorfuehrung(vorfuherungNummer);
             System.out.println("V: "+vorfuehrung);
@@ -36,7 +21,7 @@ public class ErstelleReservierungService {
             reservierungDTO.setMessage("Vorfuehrungsnummer unbekannt");
             return ResponseEntity.badRequest().body(reservierungDTO);
         }
-        Resevierung reservierung = null;
+        Resevierung reservierung;
         try {
             reservierung = Resevierung.createFresh(
                     KategorieDTO.getKategroieForDTO(reservierungDTO.getKategorieDTO()),

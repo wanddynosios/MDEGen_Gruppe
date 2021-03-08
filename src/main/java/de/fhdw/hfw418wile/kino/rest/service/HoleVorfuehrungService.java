@@ -14,7 +14,6 @@ import generated.kino.proxies.VorfuehrungProxy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashSet;
@@ -54,7 +53,7 @@ public class HoleVorfuehrungService {
 
     @GetMapping("/vorfuehrung/{vorfuehrungsNummer}")
     public ResponseEntity<VorfuehrungDTO> holeVorfuehrung(@PathVariable Integer vorfuehrungsNummer) {
-        Vorfuehrung vorfuehrung = null;
+        Vorfuehrung vorfuehrung;
         try {
             vorfuehrung = Kino.getInstance().holeVorfuehrung(vorfuehrungsNummer);
         } catch (NoSuchElementException e) {
@@ -85,7 +84,7 @@ public class HoleVorfuehrungService {
         } catch (ConstraintViolation | PersistenceException constraintViolation) {
             vorfuehrungDTO.setMessage("Fehler im Saal: "+saalDTO.getMessage());
         }
-        Set<Resevierung> reservierungen = null;
+        Set<Resevierung> reservierungen;
         try {
             reservierungen = vorfuehrung.getReservierungen();
         } catch (PersistenceException e) {

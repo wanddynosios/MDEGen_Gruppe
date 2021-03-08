@@ -1,6 +1,5 @@
 package de.fhdw.hfw418wile.kino.rest.service;
 
-import db.executer.PersistenceException;
 import de.fhdw.hfw418wile.kino.rest.dto.VorfuehrungDTO;
 import generated.kino.*;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +24,14 @@ public class ErstelleVorfuehrungService {
                 return ResponseEntity.badRequest().body(vorfuehrungDTO);
             }
         }
-        Film film = null;
+        Film film;
         try {
             film = Kino.getInstance().holeFilm(vorfuehrungDTO.getFilmDTO().getFilmName());
         } catch (NoSuchElementException e){
             vorfuehrungDTO.setMessage("Film Unbekannt");
             return ResponseEntity.badRequest().body(vorfuehrungDTO);
         }
-        Saal saal = null;
+        Saal saal;
         try {
             saal = Kino.getInstance().holeSaal(vorfuehrungDTO.getSaalDTO().getSaalNummer());
         } catch (NoSuchElementException e) {
