@@ -52,6 +52,9 @@ public class ErstelleVorfuehrungService {
                     saal.getAnzhalPlaetzeLoge(),
                     false
             );
+            vorfuehrungDTO.setFreiePlaetzeParkett(saal.getAnzahlPlaetzeParkett());
+            vorfuehrungDTO.setFreiePlaetzeMitte(saal.getAnzahlPlaetzeMitte());
+            vorfuehrungDTO.setFreiePlaetzeLoge(saal.getAnzhalPlaetzeLoge());
         } catch (Exception e) {
             e.printStackTrace();
             vorfuehrungDTO.setMessage("Vorfuehrung konnte nicht persistiert werden");

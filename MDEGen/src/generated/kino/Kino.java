@@ -1,4 +1,4 @@
-/**--- Generated at Sat Mar 06 17:55:51 CET 2021 
+/**--- Generated at Mon Mar 08 12:14:37 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -161,7 +161,7 @@ public class Kino extends Observable{
       IBuchungsEinheit proxy1 = null; ISitz proxy2 = null; 
       if(className2.equals("Sitz"))  proxy2 = this.sitzCache.get(id2);
       if(className1.equals("BuchungsEinheit"))  proxy1 = this.buchungsEinheitCache.get(id1);
-      buchungseinheitSitzeSupervisor.getInstance().addAlreadyPersistent(proxy1, proxy2);
+      buchungseinheitSitzeSupervisor.getInstance().setAlreadyPersistent(proxy1, proxy2);
    }
    private void addbuchungsBuchungseinheitenElement(Integer id1, String className1, Integer id2, String className2) throws ConstraintViolation, PersistenceException{
       IBuchung proxy1 = null; IBuchungsEinheit proxy2 = null; 
@@ -289,20 +289,6 @@ public class Kino extends Observable{
       }
    }
 /**
- * erstellt einen Saal; komplett in Service implementiert
- */
-   public void erstelleSaal(Saal saal){
-      // TODO: Implement Operation erstelleSaal
-      return;
-   }
-/**
- * reserviere Plaetzte; komplett in Service implementiert
- */
-   public void reservierePlaetze(Resevierung reservierung){
-      // TODO: Implement Operation reservierePlaetze
-      return;
-   }
-/**
  * Holt Film zum Namen
  */
    public Film holeFilm(String filmName)throws NoSuchElementException{
@@ -334,6 +320,24 @@ public class Kino extends Observable{
          if (resevierung == null)
             throw new NoSuchElementException();
          return resevierung;
+      } catch (NullPointerException n){
+         throw new NoSuchElementException();
+      }
+   }
+/**
+ * holt eine Buchung zu einer Buchungsnummer
+ */
+   public Buchung holeBuchung(Integer buchungsNummer)throws NoSuchElementException{
+      try {
+         Map<Integer, BuchungProxy> buchungen = Kino.getInstance().getBuchungCache();
+         Map<Integer, Integer> buchungsNummernUndBuchungsIds = new HashMap<>();
+         buchungen.forEach((buchungId, buchungProxy) ->
+                 buchungsNummernUndBuchungsIds.put(buchungProxy.getBuchungsNummer(), buchungId));
+         Integer buchungsId = buchungsNummernUndBuchungsIds.get(buchungsNummer);
+         Buchung buchung = Kino.getInstance().getBuchung(buchungsId);
+         if (buchung == null)
+            throw new NoSuchElementException();
+         return buchung;
       } catch (NullPointerException n){
          throw new NoSuchElementException();
       }

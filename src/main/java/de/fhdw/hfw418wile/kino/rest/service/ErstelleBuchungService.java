@@ -1,12 +1,10 @@
 package de.fhdw.hfw418wile.kino.rest.service;
 
 import db.executer.PersistenceException;
-import de.fhdw.hfw418wile.kino.rest.dto.BuchungDTO;
-import de.fhdw.hfw418wile.kino.rest.dto.BuchungseinheitDTO;
-import de.fhdw.hfw418wile.kino.rest.dto.ReiheDTO;
-import de.fhdw.hfw418wile.kino.rest.dto.SitzDTO;
+import de.fhdw.hfw418wile.kino.rest.dto.*;
 import exceptions.ConstraintViolation;
 import generated.kino.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +16,18 @@ import java.util.Set;
 public class ErstelleBuchungService {
     @PutMapping("/buchung")
     public ResponseEntity<BuchungDTO> buche(@RequestBody BuchungDTO buchungDTO){
-        System.out.println(buchungDTO.toString());
+        boolean thrown = false;
+        try {
+            Kino.getInstance().holeBuchung(buchungDTO.getBuchungsNummer());
+        } catch (NoSuchElementException e) {
+            //alles ok!
+            thrown = true;
+        } finally {
+            if (!thrown){
+                buchungDTO.setMessage("Diese Buchungsnummer ist bereits vergeben!");
+                return ResponseEntity.badRequest().body(buchungDTO);
+            }
+        }
         Vorfuehrung vorfuehrung = null;
         try {
             vorfuehrung = Kino.getInstance().holeVorfuehrung(buchungDTO.getVorfuehrungDTO().getVorfuehrungNummer());
@@ -36,14 +45,14 @@ public class ErstelleBuchungService {
             buchungDTO.setMessage("Buchung konnte nicht persisitert werden");
             return ResponseEntity.badRequest().body(buchungDTO);
         }
+        Resevierung resevierung = null;
+        try {
+            resevierung = Kino.getInstance().holeReservierung(buchungDTO.getReservierungDTO().getName());
+        } catch (NoSuchElementException e) {
+            buchungDTO.setMessage("Die angegebene Reservierung konnte nicht gefunden werden");
+            return ResponseEntity.badRequest().body(buchungDTO);
+        }
         for (BuchungseinheitDTO buchungseinheitDTO : buchungDTO.getBuchungseinheitDTOs()){
-            BuchungsEinheit buchungsEinheit = null;
-            try {
-                buchungsEinheit = BuchungsEinheit.createFresh();
-            } catch (PersistenceException e) {
-                buchungDTO.setMessage("Eine Buchungseinheit konnte nicht persisitert werden");
-                return ResponseEntity.badRequest().body(buchungDTO);
-            }
             int reihenNummer = buchungseinheitDTO.getSitzDTO().getReiheDTO().getReihenNummer();
             int sitzNummer = buchungseinheitDTO.getSitzDTO().getSitzNummer();
             Sitz sitz = null;
@@ -52,11 +61,15 @@ public class ErstelleBuchungService {
             } catch (PersistenceException e) {
                 buchungDTO.setMessage("Der/die gewuenschte Saal/Reihe/Sitz konnten nicht gefunden werden");
                 return ResponseEntity.badRequest().body(buchungDTO);
+            } catch (ArrayIndexOutOfBoundsException e){
+                buchungDTO.setMessage("Die/der gewuenschte Reihe/Sitz existiert nicht");
+                return ResponseEntity.badRequest().body(buchungDTO);
             }
+            BuchungsEinheit buchungsEinheit = null;
             try {
-                buchungsEinheit.addToSitz(sitz);
+                buchungsEinheit = BuchungsEinheit.createFresh(sitz);
             } catch (PersistenceException e) {
-                buchungDTO.setMessage("Die Buchungseinheit konnte nicht erfolgreich persistiert werden (addToSitz())");
+                buchungDTO.setMessage("Eine Buchungseinheit konnte nicht persisitert werden");
                 return ResponseEntity.badRequest().body(buchungDTO);
             }
             try {
@@ -76,6 +89,26 @@ public class ErstelleBuchungService {
             buchungDTO.setMessage("Die Buchung konnte nicht persisitert werden (addToVorfuehrungen())");
             return ResponseEntity.badRequest().body(buchungDTO);
         }
+        try {
+            resevierung.setIstBereitsEingeloest(true);
+        } catch (PersistenceException e) {
+            buchungDTO.setMessage("Der Status der Reservierung konnte nicht geaendert werden");
+            return ResponseEntity.badRequest().body(buchungDTO);
+        }
+        ResponseEntity<ReservierungDTO> reservierungDTOResponse = new HoleReservierungService().holeReservierung(resevierung.getName());
+        if (!reservierungDTOResponse.getStatusCode().equals(HttpStatus.ACCEPTED)){
+            buchungDTO.setMessage("Die zugehoerige Reservierung konnte nicht gefunden werden: "+reservierungDTOResponse.getBody().getMessage());
+            return ResponseEntity.badRequest().body(buchungDTO);
+        }
+        ReservierungDTO reservierungDTO = reservierungDTOResponse.getBody();
+        buchungDTO.setReservierungDTO(reservierungDTO);
+        ResponseEntity<VorfuehrungDTO> vorfuehrungDTOResponse = new HoleVorfuehrungService().holeVorfuehrung(vorfuehrung.getVorfuehrungsNummer());
+        if (vorfuehrungDTOResponse.getStatusCode() != HttpStatus.ACCEPTED){
+            buchungDTO.setMessage("Die zugehoerige Vorfuehrung konnte nicht gefunden werden: "+vorfuehrungDTOResponse.getBody().getMessage());
+            return ResponseEntity.badRequest().body(buchungDTO);
+        }
+        VorfuehrungDTO vorfuehrungDTO = vorfuehrungDTOResponse.getBody();
+        buchungDTO.setVorfuehrungDTO(vorfuehrungDTO);
 
         return ResponseEntity.accepted().body(buchungDTO);
     }

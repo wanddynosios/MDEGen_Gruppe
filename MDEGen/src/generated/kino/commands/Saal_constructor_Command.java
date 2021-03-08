@@ -1,11 +1,11 @@
-/**--- Generated at Sat Mar 06 17:55:51 CET 2021 
+/**--- Generated at Mon Mar 08 12:14:37 CET 2021 
  * --- No Change Allowed!  
  */
 package generated.kino.commands;
 import generated.kino.*;
 import commands.*;
 public class Saal_constructor_Command extends ServiceCommand<Saal>{
-   private static final long serialVersionUID = 1153933162L;
+   private static final long serialVersionUID = -785429229L;
    private Integer  SaalNummer;
    public Saal_constructor_Command(Integer  SaalNummer){
       super();

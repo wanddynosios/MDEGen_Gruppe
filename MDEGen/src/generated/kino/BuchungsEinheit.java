@@ -1,4 +1,4 @@
-/**--- Generated at Sat Mar 06 17:55:52 CET 2021 
+/**--- Generated at Mon Mar 08 12:14:37 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -27,25 +27,26 @@ public class BuchungsEinheit extends Observable implements java.io.Serializable,
    //40 ===== Editable : Your Attribute Section ======
    
    //50 ===== GENERATED:      Constructor ============
-   private BuchungsEinheit(Integer id, boolean objectOnly)
-   {
+   private BuchungsEinheit(Integer id, Sitz sitz, boolean objectOnly)
+   throws PersistenceException{
       super();
       this.setId(id);
+      buchungseinheitSitzeSupervisor.getInstance().set(this, sitz);
       if(objectOnly) return;
    }
    /** Caution: A Call to this Method Requires to add any newly instantiated Object to its Cache! */
-   public static BuchungsEinheit createAlreadyPersistent(BuchungsEinheitProxy proxy){
+   public static BuchungsEinheit createAlreadyPersistent(BuchungsEinheitProxy proxy, Sitz sitz)throws PersistenceException{
       if(proxy.isObjectPresent()) return proxy.getTheObject();
-      return new BuchungsEinheit(proxy.getId(), true);
+      return new BuchungsEinheit(proxy.getId(), sitz, true);
    }
-   public static BuchungsEinheit createFresh()throws PersistenceException{
+   public static BuchungsEinheit createFresh(Sitz sitz)throws PersistenceException{
       db.executer.DBDMLExecuter dmlExecuter = PersistenceExecuterFactory.getConfiguredFactory().getDBDMLExecuter();
       Integer id = dmlExecuter.getNextId();
       try{
          dmlExecuter.insertInto("BuchungsEinheit", "id, typeKey", 
          id.toString() + ", " + TypeKeyManager.getTheInstance().getTypeKey("Kino", "BuchungsEinheit").toString());
       }catch(SQLException|NoConnectionException e){throw new PersistenceException(e.getMessage());}
-      BuchungsEinheit me = new BuchungsEinheit(id, false);
+      BuchungsEinheit me = new BuchungsEinheit(id, sitz, false);
       Kino.getInstance().addBuchungsEinheitProxy(new BuchungsEinheitProxy(me));
       return me;
    }
@@ -66,16 +67,11 @@ public class BuchungsEinheit extends Observable implements java.io.Serializable,
       return ((IBuchungsEinheit)o).getId().equals(this.getId());
    }
    public int hashCode() {return this.getId().hashCode();}
-   public Set<Sitz> getSitz() throws PersistenceException{
-      Set<Sitz> result = new HashSet<>();
-      for (ISitz i : buchungseinheitSitzeSupervisor.getInstance().getSitz(this)) result.add(i.getTheObject());
-      return result;
+   public Sitz getSitz() throws PersistenceException{
+      return buchungseinheitSitzeSupervisor.getInstance().getSitz(this).getTheObject();
    }
-   public void addToSitz(Sitz arg) throws PersistenceException{
-      buchungseinheitSitzeSupervisor.getInstance().add(this, arg);
-   }
-   public boolean removeFromSitz(Sitz arg) throws PersistenceException{
-      return buchungseinheitSitzeSupervisor.getInstance().remove(this, arg);
+   public void setSitz(Sitz newSitz)throws PersistenceException{
+      buchungseinheitSitzeSupervisor.getInstance().change(this, this.getSitz(), newSitz);
    }
    //80 ===== Editable : Your Operations =============
 //90 ===== GENERATED: End of Your Operations ======

@@ -8,8 +8,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class SitzDTO extends DTO{
-    private Integer sitzNummer;
-    private ReiheDTO reiheDTO;
+    protected Integer sitzNummer;
+    protected ReiheDTO reiheDTO;
 
     public SitzDTO(Integer sitzNummer) {
         this.sitzNummer = sitzNummer;

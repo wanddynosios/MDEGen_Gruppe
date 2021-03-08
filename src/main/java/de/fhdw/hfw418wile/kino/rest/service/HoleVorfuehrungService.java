@@ -5,6 +5,7 @@ import de.fhdw.hfw418wile.kino.rest.dto.FilmDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.ReservierungDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.SaalDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.VorfuehrungDTO;
+import exceptions.ConstraintViolation;
 import generated.kino.Kino;
 import generated.kino.NoSuchElementException;
 import generated.kino.Vorfuehrung;
@@ -52,7 +53,7 @@ public class HoleVorfuehrungService {
     }
 
     @GetMapping("/vorfuehrung/{vorfuehrungsNummer}")
-    public ResponseEntity<VorfuehrungDTO> getVorfuehrung(@PathVariable Integer vorfuehrungsNummer) throws PersistenceException {
+    public ResponseEntity<VorfuehrungDTO> holeVorfuehrung(@PathVariable Integer vorfuehrungsNummer) {
         Vorfuehrung vorfuehrung = null;
         try {
             vorfuehrung = Kino.getInstance().holeVorfuehrung(vorfuehrungsNummer);
@@ -63,7 +64,13 @@ public class HoleVorfuehrungService {
         }
         VorfuehrungDTO vorfuehrungDTO = new VorfuehrungDTO();
         vorfuehrungDTO.setVorfuehrungNummer(vorfuehrung.getVorfuehrungsNummer());
-        vorfuehrungDTO.setFilmDTO(new FilmDTO(vorfuehrung.getFilm().getFilmName()));
+        try {
+            vorfuehrungDTO.setFilmDTO(new FilmDTO(vorfuehrung.getFilm().getFilmName()));
+        } catch (PersistenceException e) {
+            vorfuehrungDTO = new VorfuehrungDTO();
+            vorfuehrungDTO.setMessage("Der Vorfuehrung ist kein valider Film zugeordnet");
+            return ResponseEntity.badRequest().body(vorfuehrungDTO);
+        }
         vorfuehrungDTO.setFreiePlaetzeParkett(vorfuehrung.getFreiePlaetzeParkett());
         vorfuehrungDTO.setFreiePlaetzeMitte(vorfuehrung.getFreiePlaetzeMitte());
         vorfuehrungDTO.setFreiePlaetzeLoge(vorfuehrung.getFreiePlaetzeLoge());
@@ -71,13 +78,26 @@ public class HoleVorfuehrungService {
         vorfuehrungDTO.setPreisMitte(vorfuehrung.getPreisMitte());
         vorfuehrungDTO.setPreisLoge(vorfuehrung.getPreisLoge());
         vorfuehrungDTO.setVorfuehrungNummer(vorfuehrung.getVorfuehrungsNummer());
-        vorfuehrungDTO.setSaalDTO(new SaalDTO(vorfuehrung.getSaal().getSaalNummer()));
-        Set<Resevierung> reservierungen = vorfuehrung.getReservierungen();
+        SaalDTO saalDTO = null;
+        try {
+            saalDTO = new HoleSaalService().holeSaal(vorfuehrung.getSaal().getSaalNummer()).getBody();
+            vorfuehrungDTO.setSaalDTO(saalDTO);
+        } catch (ConstraintViolation | PersistenceException constraintViolation) {
+            vorfuehrungDTO.setMessage("Fehler im Saal: "+saalDTO.getMessage());
+        }
+        Set<Resevierung> reservierungen = null;
+        try {
+            reservierungen = vorfuehrung.getReservierungen();
+        } catch (PersistenceException e) {
+            vorfuehrungDTO = new VorfuehrungDTO();
+            vorfuehrungDTO.setMessage("Der Vorfuehrung sind keine validen Reservierungen zugeordnet");
+            return ResponseEntity.badRequest().body(vorfuehrungDTO);
+        }
         Set<ReservierungDTO> reservierungDTOs = new HashSet<>();
         for (Resevierung resevierung : reservierungen) {
             reservierungDTOs.add(new ReservierungDTO(resevierung.getName()));
         }
         vorfuehrungDTO.setReservierungDTOs(reservierungDTOs);
-        return ResponseEntity.badRequest().body(vorfuehrungDTO);
+        return ResponseEntity.accepted().body(vorfuehrungDTO);
     }
 }

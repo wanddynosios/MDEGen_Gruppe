@@ -26,6 +26,10 @@ public class ErstelleFilmService {
                 return ResponseEntity.badRequest().body(filmDTO);
             }
         }
+        if (filmDTO.getFilmName() == null){
+            filmDTO.setMessage("Kein Filmname angegeben");
+            return ResponseEntity.badRequest().body(filmDTO);
+        }
         try {
             Film.createFresh(filmDTO.getFilmName());
         } catch (PersistenceException e) {

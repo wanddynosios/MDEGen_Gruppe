@@ -44,16 +44,18 @@ public class ErstelleSaalService {
             for (SitzDTO sitzDTO : reiheDTO.getSitze()){
                 try {
                     sitze.add(Sitz.createFresh(sitzDTO.getSitzNummer(), reihe));
-                    saal.addToReihen(reihe);
                 } catch (PersistenceException e) {
-                    sitzDTO.setMessage("Sitz "+sitzDTO.toString()+" oder Reihe "+reiheDTO.toString()+" nicht valide");
+                    saalDTO.setMessage("Sitz "+sitzDTO.toString()+ " nicht valide");
                     return ResponseEntity.badRequest().body(saalDTO);
                 }
             }
+            try {
+                saal.addToReihen(reihe);
+            } catch (PersistenceException e) {
+                saalDTO.setMessage("Reihe "+reiheDTO.toString()+ " nicht valide");
+                return ResponseEntity.badRequest().body(saalDTO);
+            }
         }
         return ResponseEntity.accepted().body(saalDTO);
-
     }
-
-
 }

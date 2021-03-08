@@ -1,4 +1,4 @@
-/**--- Generated at Sat Mar 06 17:55:52 CET 2021 
+/**--- Generated at Mon Mar 08 12:14:37 CET 2021 
  * --- No Change Allowed!  
  */
 package generated.kino.proxies;
@@ -8,7 +8,7 @@ import db.executer.*;
 import generated.kino.BuchungsEinheit;
 import java.sql.ResultSet;
 import generated.kino.Sitz;
-import java.util.Set;
+import generated.kino.relationControl.buchungseinheitSitzeSupervisor;
 public class BuchungsEinheitProxy implements IBuchungsEinheit{
    private Integer id;
    private Optional<BuchungsEinheit> theObject;
@@ -41,16 +41,14 @@ public class BuchungsEinheitProxy implements IBuchungsEinheit{
       ResultSet rs = null;
       try {
          rs = DBExecuterFactory.getConfiguredFactory().getDBDMLExecuter().selectIdSpecifiedCursorAleadyAtFirstRow("BuchungsEinheit", this.id);
-         return BuchungsEinheit.createAlreadyPersistent(this);
+         Sitz sitz = buchungseinheitSitzeSupervisor.getInstance().getSitz(this).getTheObject();
+         return BuchungsEinheit.createAlreadyPersistent(this, sitz);
       } catch (Exception e) {throw new PersistenceException(e.getMessage());}
    }
-   public Set<Sitz> getSitz() throws PersistenceException{
+   public Sitz getSitz() throws PersistenceException{
       return this.getTheObject().getSitz();
    }
-   public void addToSitz(Sitz arg) throws PersistenceException{
-      this.getTheObject().addToSitz(arg);
-   }
-   public boolean removeFromSitz(Sitz arg) throws PersistenceException{
-      return this.getTheObject().removeFromSitz(arg);
+   public void setSitz(Sitz newSitz)throws PersistenceException{
+      this.getTheObject().setSitz(newSitz);
    }
 }

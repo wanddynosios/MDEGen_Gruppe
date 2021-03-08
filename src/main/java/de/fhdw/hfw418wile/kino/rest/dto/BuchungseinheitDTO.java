@@ -9,4 +9,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BuchungseinheitDTO extends DTO{
     private SitzDTO sitzDTO;
+
+    public BuchungseinheitDTO(SitzDTO sitzDTO) {
+        this.sitzDTO = sitzDTO;
+    }
 }

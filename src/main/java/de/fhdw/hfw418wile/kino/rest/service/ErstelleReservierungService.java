@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ErstelleReservierungService {
-    @PutMapping("/reserviere")
+    @PutMapping("/reservierung")
     public ResponseEntity<ReservierungDTO> reserviere(@RequestBody ReservierungDTO reservierungDTO){
 //        Vorfuehrung vorfuehrungX = Vorfuehrung.createFresh(
 //                Film.createFresh("STARWARS"),

@@ -1,4 +1,4 @@
-/**--- Generated at Sat Mar 06 17:55:52 CET 2021 
+/**--- Generated at Mon Mar 08 12:14:37 CET 2021 
  * --- Change only in Editable Sections!  
  * --- Do not touch section numbering!   
  */
@@ -7,8 +7,6 @@ package generated.kino.relationControl;
 import relationManagement.Relation;
 import db.executer.PersistenceException;
 import generated.kino.proxies.*;
-import java.util.Set;
-import java.util.stream.Collectors;
 //20 ===== Editable : Your Import Section =========
 
 //25 ===== GENERATED:      Header Section =========
@@ -27,23 +25,19 @@ public class buchungseinheitSitzeSupervisor
    
    //70 ===== GENERATED:      Feature Access =========
    public static buchungseinheitSitzeSupervisor getInstance(){return theInstance;}
-   public Set<ISitz> getSitz(IBuchungsEinheit owner){
-      return this.elements.getRelatedTargets(owner).stream().collect(Collectors.toSet());
+   public ISitz getSitz(IBuchungsEinheit owner){
+      return this.elements.getRelatedTargets(owner).isEmpty() ? null : this.elements.getRelatedTargets(owner).get(0);
    }
-   public void add(IBuchungsEinheit owner, ISitz target) throws PersistenceException{
-      this.elements.addElement(owner,target);
+   public void set(IBuchungsEinheit owner, ISitz target) throws PersistenceException{
+      ISitz targetOld = this.getSitz(owner); ISitz targetNew = target;
+      this.elements.change(owner, targetOld, targetNew);
    }
-   public void addAlreadyPersistent(IBuchungsEinheit owner, ISitz target) throws PersistenceException{
-      this.elements.addElementAlreadyPersistent(owner,target);
+   public void setAlreadyPersistent(IBuchungsEinheit owner, ISitz target) {
+      ISitz targetOld = null; ISitz targetNew = target;
+      this.elements.setAlreadyPersistent(owner, targetNew);
    }
-   public boolean remove(IBuchungsEinheit owner, ISitz target) throws PersistenceException{
-      boolean loop = this.removeOnce(owner, target);
-      boolean result = loop;
-      while(loop) loop = this.removeOnce(owner, target);
-      return result;
-   }
-   private boolean removeOnce(IBuchungsEinheit owner, ISitz target) throws PersistenceException{
-      return this.elements.removeElement(owner,target);
+   public void change(IBuchungsEinheit owner, ISitz targetOld, ISitz targetNew) throws PersistenceException{
+      this.elements.change(owner, targetOld, targetNew);
    }
    //80 ===== Editable : Your Operations =============
 //90 ===== GENERATED: End of Your Operations ======

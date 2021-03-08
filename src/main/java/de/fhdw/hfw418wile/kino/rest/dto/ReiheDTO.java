@@ -20,8 +20,9 @@ public class ReiheDTO extends DTO{
         this.kategorieDTO = kategorieDTO;
         this.sitze = sitze;
     }
-    public ReiheDTO(Reihe reihe){
 
+    public ReiheDTO(Integer reihenNummer) {
+        this.reihenNummer = reihenNummer;
     }
 
     @Override
