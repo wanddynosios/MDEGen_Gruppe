@@ -8,8 +8,8 @@ import de.fhdw.hfw418wile.kino.rest.dto.VorfuehrungDTO;
 import exceptions.ConstraintViolation;
 import generated.kino.Kino;
 import generated.kino.NoSuchElementException;
-import generated.kino.Vorfuehrung;
 import generated.kino.Resevierung;
+import generated.kino.Vorfuehrung;
 import generated.kino.proxies.VorfuehrungProxy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +28,7 @@ public class HoleVorfuehrungService {
         Set<Vorfuehrung> vorfuehrungen = new HashSet<>();
         vorfuehrungCache.forEach((integer, vorfuehrungProxy) -> vorfuehrungen.add(vorfuehrungProxy.getTheObject()));
         Set<VorfuehrungDTO> vorfuehrungDTOs = new HashSet<>();
-        for (Vorfuehrung vorfuehrung : vorfuehrungen){
+        for (Vorfuehrung vorfuehrung : vorfuehrungen) {
             VorfuehrungDTO vorfuehrungDTO = new VorfuehrungDTO();
             vorfuehrungDTO.setVorfuehrungNummer(vorfuehrung.getVorfuehrungsNummer());
             vorfuehrungDTO.setFilmDTO(new FilmDTO(vorfuehrung.getFilm().getFilmName()));
@@ -42,13 +42,13 @@ public class HoleVorfuehrungService {
             vorfuehrungDTO.setSaalDTO(new SaalDTO(vorfuehrung.getSaal().getSaalNummer()));
             Set<Resevierung> reservierungen = vorfuehrung.getReservierungen();
             Set<ReservierungDTO> reservierungDTOs = new HashSet<>();
-            for (Resevierung resevierung : reservierungen){
+            for (Resevierung resevierung : reservierungen) {
                 reservierungDTOs.add(new ReservierungDTO(resevierung.getName()));
             }
             vorfuehrungDTO.setReservierungDTOs(reservierungDTOs);
             vorfuehrungDTOs.add(vorfuehrungDTO);
         }
-     return ResponseEntity.accepted().body(vorfuehrungDTOs);
+        return ResponseEntity.accepted().body(vorfuehrungDTOs);
     }
 
     @GetMapping("/vorfuehrung/{vorfuehrungsNummer}")
@@ -82,7 +82,7 @@ public class HoleVorfuehrungService {
             saalDTO = new HoleSaalService().holeSaal(vorfuehrung.getSaal().getSaalNummer()).getBody();
             vorfuehrungDTO.setSaalDTO(saalDTO);
         } catch (ConstraintViolation | PersistenceException constraintViolation) {
-            vorfuehrungDTO.setMessage("Fehler im Saal: "+saalDTO.getMessage());
+            vorfuehrungDTO.setMessage("Fehler im Saal: " + saalDTO.getMessage());
         }
         Set<Resevierung> reservierungen;
         try {

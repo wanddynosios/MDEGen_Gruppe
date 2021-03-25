@@ -22,7 +22,7 @@ public class ErstelleSaalService {
     public ResponseEntity<SaalDTO> erstelleSaal(@RequestBody SaalDTO saalDTO) {
         System.out.println(saalDTO);
         if (saalDTO.getReihen() == null)
-            System.out.println("ERROR keine Reihen");
+            System.out.println("ERROR keine Reihen"); //TODO
         Saal saal = null;
         try {
             saal = Saal.createFresh(saalDTO.getSaalNummer());
@@ -34,7 +34,7 @@ public class ErstelleSaalService {
             Reihe reihe = null;
             try {
                 reihe = Reihe.createFresh(
-                        KategorieDTO.getKategroieForDTO(reiheDTO.getKategorieDTO()),
+                        KategorieDTO.getKategorieForDTO(reiheDTO.getKategorieDTO()),
                         reiheDTO.getReihenNummer());
             } catch (PersistenceException e) {
                 saalDTO.setMessage("Reihe "+reiheDTO.toString()+" konnte nicht persistiert werden");

@@ -24,7 +24,7 @@ public class ErstelleReservierungService {
         Resevierung reservierung;
         try {
             reservierung = Resevierung.createFresh(
-                    KategorieDTO.getKategroieForDTO(reservierungDTO.getKategorieDTO()),
+                    KategorieDTO.getKategorieForDTO(reservierungDTO.getKategorieDTO()),
                     reservierungDTO.getName(),
                     reservierungDTO.getAnzahlPlaetze(),
                     false,

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ErstelleVorfuehrungService {
     @PutMapping("/vorfuehrung")
     public ResponseEntity<VorfuehrungDTO> erstelleVorfuehrung(@RequestBody VorfuehrungDTO vorfuehrungDTO){
-        System.out.println(vorfuehrungDTO.toString());
         boolean thrown = false;
         try {
             Kino.getInstance().holeVorfuehrung(vorfuehrungDTO.getVorfuehrungNummer());

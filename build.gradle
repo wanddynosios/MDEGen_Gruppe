@@ -18,6 +18,12 @@ repositories {
     mavenCentral()
 }
 
+jar {
+  manifest {
+   attributes 'Main-Class': 'de.fhdw.hfw418wile.kino.KinoApplication'
+  }
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'

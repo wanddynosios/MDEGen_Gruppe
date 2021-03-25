@@ -35,23 +35,23 @@ public class HoleSaalService {
     }
 
     @GetMapping("/saal/{id}")
-    public ResponseEntity<SaalDTO> holeSaal(@PathVariable Integer id) throws PersistenceException, ConstraintViolation {
-        Reihe reiheX = Reihe.createFresh(
-                KategorieParkett.getInstance(),
-                1);
-        reiheX.addToSitze(Sitz.createFresh(1, reiheX));
-        reiheX.addToSitze(Sitz.createFresh(2, reiheX));
-        Reihe reiheXX = Reihe.createFresh(
-                KategorieParkett.getInstance(),
-                1);
-        reiheXX.addToSitze(Sitz.createFresh(1, reiheXX));
-        reiheXX.addToSitze(Sitz.createFresh(2, reiheXX));
-        Saal.createFresh(1).addToReihen(reiheX);
-        try {
-            Kino.getInstance().holeSaal(1).addToReihen(reiheXX);
-        } catch (NoSuchElementException e) {
-            e.printStackTrace();
-        }
+    public ResponseEntity<SaalDTO> holeSaal(@PathVariable Integer id) throws PersistenceException, ConstraintViolation { //TODO
+//        Reihe reiheX = Reihe.createFresh(
+//                KategorieParkett.getInstance(),
+//                1);
+//        reiheX.addToSitze(Sitz.createFresh(1, reiheX));
+//        reiheX.addToSitze(Sitz.createFresh(2, reiheX));
+//        Reihe reiheXX = Reihe.createFresh(
+//                KategorieParkett.getInstance(),
+//                1);
+//        reiheXX.addToSitze(Sitz.createFresh(1, reiheXX));
+//        reiheXX.addToSitze(Sitz.createFresh(2, reiheXX));
+//        Saal.createFresh(1).addToReihen(reiheX);
+//        try {
+//            Kino.getInstance().holeSaal(1).addToReihen(reiheXX);
+//        } catch (NoSuchElementException e) {
+//            e.printStackTrace();
+//        }
 
 
         Saal saal;

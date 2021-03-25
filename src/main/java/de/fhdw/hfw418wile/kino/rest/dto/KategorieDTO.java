@@ -29,7 +29,7 @@ public enum KategorieDTO {
     }
 
     @SneakyThrows //Singleton.getInstance() sollte in der Regel keinen Fehler werfen
-    public static Kategorie getKategroieForDTO(KategorieDTO kategorieDTO) {
+    public static Kategorie getKategorieForDTO(KategorieDTO kategorieDTO) {
         switch (kategorieDTO){
             case KategorieParkett:
                 return generated.kino.KategorieParkett.getInstance();

@@ -1,6 +1,5 @@
 package de.fhdw.hfw418wile.kino.rest.dto;
 
-import generated.kino.Vorfuehrung;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +20,7 @@ public class VorfuehrungDTO extends DTO{
     private Set<ReservierungDTO> reservierungDTOs;
     private FilmDTO filmDTO;
     private SaalDTO saalDTO;
+    //TODO vorfuehrung ist vorbei???
 
 
     @Override

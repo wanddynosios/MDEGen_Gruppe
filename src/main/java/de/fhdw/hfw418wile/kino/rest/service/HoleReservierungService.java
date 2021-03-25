@@ -39,7 +39,6 @@ public class HoleReservierungService {
                         reservierungsId,
                         resevierungProxy.getVorfuehrung().getVorfuehrungsNummer());
             } catch (PersistenceException e) {
-
                 thrown.set(true);
             }
         });
