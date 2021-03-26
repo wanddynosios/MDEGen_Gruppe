@@ -21,11 +21,35 @@ public class ErstelleReservierungService {
             reservierungDTO.setMessage("Vorfuehrungsnummer unbekannt");
             return ResponseEntity.badRequest().body(reservierungDTO);
         }
+        boolean thrown = false;
+        try {
+            Kino.getInstance().holeReservierung(reservierungDTO.getName()+"_"+reservierungDTO.getVorfuehrungDTO().getVorfuehrungNummer());
+        } catch (NoSuchElementException e) {
+            thrown = true;
+            //alles ok
+        }
+        if (!thrown){
+            reservierungDTO.setMessage("Reservierung unter diesem Namen fuer diesen Film bereits vorhanden");
+            return ResponseEntity.badRequest().body(reservierungDTO);
+        }
+
+
+        try {
+            vorfuehrung.reserviere(KategorieDTO.getKategorieForDTO(reservierungDTO.getKategorieDTO()), reservierungDTO.getAnzahlPlaetze());
+        } catch (NichtGenugPlaetzeException e) {
+            reservierungDTO.setMessage("Es gibt nicht genug Plaetze in der gewuenschten Kategorie");
+            return ResponseEntity.badRequest().body(reservierungDTO);
+        } catch (PersistenceException e) {
+            reservierungDTO.setMessage("Reservierung konnte leider nicht persistiert werden");
+            return ResponseEntity.badRequest().body(reservierungDTO);
+        }
+
+
         Resevierung reservierung;
         try {
             reservierung = Resevierung.createFresh(
                     KategorieDTO.getKategorieForDTO(reservierungDTO.getKategorieDTO()),
-                    reservierungDTO.getName(),
+                    reservierungDTO.getName()+"_"+reservierungDTO.getVorfuehrungDTO().getVorfuehrungNummer(),
                     reservierungDTO.getAnzahlPlaetze(),
                     false,
                     vorfuehrung
@@ -35,16 +59,13 @@ public class ErstelleReservierungService {
             return ResponseEntity.badRequest().body(reservierungDTO);
         }
         try {
-            vorfuehrung.reserviere(reservierung);
-        } catch (NichtGenugPlaetzeException e) {
-            reservierungDTO.setMessage("Es gibt nicht genug Plaetze in der gewuenschten Kategorie");
-            return ResponseEntity.badRequest().body(reservierungDTO);
-        } catch (PersistenceException e) {
-            reservierungDTO.setMessage("Reservierung konnte leider nicht persistiert werden");
-            return ResponseEntity.badRequest().body(reservierungDTO);
+            reservierung.getVorfuehrung().addToReservierungen(reservierung); //TODO
         } catch (ConstraintViolation constraintViolation) {
             reservierungDTO.setMessage("Reservierung konnte nicht der Vorfuehrung hinzugefuegt werden." +
                     " Irgendetwas ist banane ");
+            return ResponseEntity.badRequest().body(reservierungDTO);
+        } catch (PersistenceException e) {
+            reservierungDTO.setMessage("Reservierung konnte leider nicht in der Vorfuehrung persistiert werden");
             return ResponseEntity.badRequest().body(reservierungDTO);
         }
         System.out.println(vorfuehrung);

@@ -194,8 +194,7 @@ public class Vorfuehrung extends Observable implements java.io.Serializable, IVo
 /**
  * Reserviert eine bestimmte Anzahl an Plätzen in einer Kategorie
  */
-   public void reserviere(Resevierung reservierung) throws NichtGenugPlaetzeException, PersistenceException, ConstraintViolation {
-      Kategorie kategorie = reservierung.getKategorie().getTheObject();
+   public void reserviere(Kategorie kategorie, Integer anzahlPlaetze) throws NichtGenugPlaetzeException, PersistenceException {
       Integer freiePlaetze = 0;
       switch (kategorie.getClass().getSimpleName()){
          case "KategorieParkett": freiePlaetze = getFreiePlaetzeParkett(); break;
@@ -203,15 +202,14 @@ public class Vorfuehrung extends Observable implements java.io.Serializable, IVo
          case "KategorieLoge": freiePlaetze = getFreiePlaetzeLoge(); break;
          default: throw new RuntimeException("Unbekannte Kategorie. Schreibweise geaendert?");
       }
-      if (freiePlaetze - reservierung.getAnzahlPlaetze() < 0)
+      if (freiePlaetze - anzahlPlaetze < 0)
          throw new NichtGenugPlaetzeException();
       switch (kategorie.getClass().getSimpleName()){
-         case "KategorieParkett": setFreiePlaetzeParkett(getFreiePlaetzeParkett()-reservierung.getAnzahlPlaetze()); break;
-         case "KategorieMitte": setFreiePlaetzeMitte(getFreiePlaetzeMitte()-reservierung.getAnzahlPlaetze()); break;
-         case "KategorieLoge": setFreiePlaetzeLoge(getFreiePlaetzeLoge()-reservierung.getAnzahlPlaetze()); break;
+         case "KategorieParkett": setFreiePlaetzeParkett(getFreiePlaetzeParkett()-anzahlPlaetze); break;
+         case "KategorieMitte": setFreiePlaetzeMitte(getFreiePlaetzeMitte()-anzahlPlaetze); break;
+         case "KategorieLoge": setFreiePlaetzeLoge(getFreiePlaetzeLoge()-anzahlPlaetze); break;
          default: throw new RuntimeException("Unbekannte Kategorie. Schreibweise geaendert?");
       }
-      reservierung.getVorfuehrung().addToReservierungen(reservierung);
    }
 
    @Override

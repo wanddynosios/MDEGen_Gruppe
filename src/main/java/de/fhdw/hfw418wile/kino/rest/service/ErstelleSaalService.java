@@ -5,9 +5,7 @@ import de.fhdw.hfw418wile.kino.rest.dto.KategorieDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.ReiheDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.SaalDTO;
 import de.fhdw.hfw418wile.kino.rest.dto.SitzDTO;
-import generated.kino.Reihe;
-import generated.kino.Saal;
-import generated.kino.Sitz;
+import generated.kino.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,11 +21,22 @@ public class ErstelleSaalService {
         System.out.println(saalDTO);
         if (saalDTO.getReihen() == null)
             System.out.println("ERROR keine Reihen"); //TODO
+        boolean thrown = false;
+        try {
+            Kino.getInstance().holeSaal(saalDTO.getSaalNummer());
+        } catch (NoSuchElementException e) {
+            thrown = true;
+            //alles ok
+        }
+        if (!thrown){
+            saalDTO.setMessage("Saalnummer bereits vergeben: "+saalDTO.getSaalNummer());
+            return ResponseEntity.badRequest().body(saalDTO);
+        }
         Saal saal = null;
         try {
             saal = Saal.createFresh(saalDTO.getSaalNummer());
         } catch (PersistenceException e) {
-            saalDTO.setMessage("Saal nicht valide oder SaalNummer bereits vergeben");
+            saalDTO.setMessage("Saal nicht valide");
             return ResponseEntity.badRequest().body(saalDTO);
         }
         for (ReiheDTO reiheDTO : saalDTO.getReihen()){

@@ -1,16 +1,14 @@
 package de.fhdw.hfw418wile.kino.rest.service;
 
 import db.executer.PersistenceException;
-import de.fhdw.hfw418wile.kino.rest.dto.FilmDTO;
-import de.fhdw.hfw418wile.kino.rest.dto.ReservierungDTO;
-import de.fhdw.hfw418wile.kino.rest.dto.SaalDTO;
-import de.fhdw.hfw418wile.kino.rest.dto.VorfuehrungDTO;
+import de.fhdw.hfw418wile.kino.rest.dto.*;
 import exceptions.ConstraintViolation;
 import generated.kino.Kino;
 import generated.kino.NoSuchElementException;
 import generated.kino.Resevierung;
 import generated.kino.Vorfuehrung;
 import generated.kino.proxies.VorfuehrungProxy;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -80,10 +78,27 @@ public class HoleVorfuehrungService {
         SaalDTO saalDTO = null;
         try {
             saalDTO = new HoleSaalService().holeSaal(vorfuehrung.getSaal().getSaalNummer()).getBody();
-            vorfuehrungDTO.setSaalDTO(saalDTO);
         } catch (ConstraintViolation | PersistenceException constraintViolation) {
             vorfuehrungDTO.setMessage("Fehler im Saal: " + saalDTO.getMessage());
         }
+        ResponseEntity<Set<BuchungDTO>> buchungDTOs = new HoleBuchungService().holeBuchungen(vorfuehrungsNummer);
+        if (!buchungDTOs.getStatusCode().equals(HttpStatus.ACCEPTED)){
+            vorfuehrungDTO.setMessage("Fehler beim holen der zugehörigen Buchungen: "+buchungDTOs.getBody());
+            return ResponseEntity.badRequest().body(vorfuehrungDTO);
+        }
+        for (BuchungDTO buchungDTO : buchungDTOs.getBody()){
+            for (BuchungseinheitDTO buchungseinheitDTO : buchungDTO.getBuchungseinheitDTOs()){
+                int reiheNummer = buchungseinheitDTO.getSitzDTO().getReiheDTO().getReihenNummer();
+                int sitzNummer =buchungseinheitDTO.getSitzDTO().getSitzNummer();
+                try {
+                saalDTO.getReihen().get(reiheNummer - 1 ).getSitze().get(sitzNummer -1).setBelegt(true);
+                } catch (IndexOutOfBoundsException e){
+                    vorfuehrungDTO.setMessage("Die/der gewuenschte Reihe ("+reiheNummer+")/Sitz ("+sitzNummer+") existiert nicht und konnte nicht gebucht werden");
+                    return ResponseEntity.badRequest().body(vorfuehrungDTO);
+                }
+            }
+        }
+            vorfuehrungDTO.setSaalDTO(saalDTO);
         Set<Resevierung> reservierungen;
         try {
             reservierungen = vorfuehrung.getReservierungen();

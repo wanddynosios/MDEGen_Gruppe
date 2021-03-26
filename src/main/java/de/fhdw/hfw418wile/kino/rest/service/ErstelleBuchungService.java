@@ -53,16 +53,39 @@ public class ErstelleBuchungService {
             buchungDTO.setMessage("Die angegebene Reservierung konnte nicht gefunden werden");
             return ResponseEntity.badRequest().body(buchungDTO);
         }
-        for (BuchungseinheitDTO buchungseinheitDTO : buchungDTO.getBuchungseinheitDTOs()){
+        //hole bestehende Buchungen und die dazugehörigen BuchungseinheitsDTOs
+        ResponseEntity<Set<BuchungDTO>> buchungsDTOs = new HoleBuchungService().holeBuchungen(vorfuehrung.getVorfuehrungsNummer());
+        if (!buchungsDTOs.getStatusCode().equals(HttpStatus.ACCEPTED)){
+            buchungDTO.setMessage("Die bestehenden Buchungen zur vorfuehrung konnten nicht geholt werden"+buchungsDTOs.getBody().toString());
+            return ResponseEntity.badRequest().body(buchungDTO);
+        }
+        Set<BuchungseinheitDTO> buchungseinheitDTOs = new HashSet<>();
+        buchungsDTOs.getBody().forEach(
+                buchungDTO1 -> buchungDTO1.
+                        getBuchungseinheitDTOs().forEach(
+                        buchungseinheitDTO1 ->
+                                buchungseinheitDTOs.add(buchungseinheitDTO1)));
+        //there have to be two for-loops, because we have to check, if all seats are free before persisting the buchung-object in the DB
+        for (BuchungseinheitDTO buchungseinheitDTO : buchungDTO.getBuchungseinheitDTOs()) {
             int reihenNummer = buchungseinheitDTO.getSitzDTO().getReiheDTO().getReihenNummer();
             int sitzNummer = buchungseinheitDTO.getSitzDTO().getSitzNummer();
+
+            if (platzBelegt(reihenNummer, sitzNummer, buchungseinheitDTOs)) {
+                buchungDTO.setMessage("Der Platz " + sitzNummer + " in der Reihe " + reihenNummer + " ist bereits belegt!!!");
+                return ResponseEntity.badRequest().body(buchungDTO);
+            }
+        }
+        for (BuchungseinheitDTO buchungseinheitDTO : buchungDTO.getBuchungseinheitDTOs()) {
+            int reihenNummer = buchungseinheitDTO.getSitzDTO().getReiheDTO().getReihenNummer();
+            int sitzNummer = buchungseinheitDTO.getSitzDTO().getSitzNummer();
+
             Sitz sitz;
             try {
-                sitz = vorfuehrung.getSaal().getReihen().get(reihenNummer-1).getSitze().get(sitzNummer-1);
+                    sitz = vorfuehrung.getSaal().getReihen().get(reihenNummer-1).getSitze().get(sitzNummer-1);
             } catch (PersistenceException e) {
                 buchungDTO.setMessage("Der/die gewuenschte Saal/Reihe/Sitz konnten nicht gefunden werden");
                 return ResponseEntity.badRequest().body(buchungDTO);
-            } catch (ArrayIndexOutOfBoundsException e){
+            } catch (IndexOutOfBoundsException e){
                 buchungDTO.setMessage("Die/der gewuenschte Reihe/Sitz existiert nicht");
                 return ResponseEntity.badRequest().body(buchungDTO);
             }
@@ -137,5 +160,15 @@ public class ErstelleBuchungService {
         buchungseinheitDTOSet.add(buchungseinheitDTO2);
         buchungDTO.setBuchungseinheitDTOs(buchungseinheitDTOSet);
         return buchungDTO;
+    }
+    private boolean platzBelegt(int reiheNr, int sitzNr, Set<BuchungseinheitDTO> buchungseinheitDTOs){
+        System.out.println("IN");
+        for (BuchungseinheitDTO buchungseinheitDTO : buchungseinheitDTOs){
+            System.out.println("R: "+buchungseinheitDTO.getSitzDTO().getReiheDTO().getReihenNummer() + " vs. "+reiheNr);
+            System.out.println("P: "+buchungseinheitDTO.getSitzDTO().getSitzNummer() + " vs. "+sitzNr);
+            if (buchungseinheitDTO.getSitzDTO().getReiheDTO().getReihenNummer() == (reiheNr)
+                 && buchungseinheitDTO.getSitzDTO().getSitzNummer() == (sitzNr)) return true;
+        }
+        return false;
     }
 }
