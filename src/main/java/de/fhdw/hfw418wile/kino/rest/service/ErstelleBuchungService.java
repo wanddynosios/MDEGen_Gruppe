@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -79,9 +80,21 @@ public class ErstelleBuchungService {
             int reihenNummer = buchungseinheitDTO.getSitzDTO().getReiheDTO().getReihenNummer();
             int sitzNummer = buchungseinheitDTO.getSitzDTO().getSitzNummer();
 
-            Sitz sitz;
+            Sitz sitz = null;
+            //this is necessary, because the generated code does not treat arrays consistently for some reason
             try {
-                    sitz = vorfuehrung.getSaal().getReihen().get(reihenNummer-1).getSitze().get(sitzNummer-1);
+                List<Reihe> reihen = vorfuehrung.getSaal().getReihen();
+                for (Reihe reihe : reihen){
+                    if (reihe.getReihenNummer() == reihenNummer) {
+                        for (Sitz sitz1 : reihe.getSitze()){
+                            if (sitz1.getSitzNummer() == sitzNummer)
+                                sitz = sitz1;
+                        }
+                    }
+
+                }
+                if (sitz == null) throw new IndexOutOfBoundsException();
+                    //sitz = vorfuehrung.getSaal().getReihen().get(reihenNummer-1).getSitze().get(sitzNummer-1);
             } catch (PersistenceException e) {
                 buchungDTO.setMessage("Der/die gewuenschte Saal/Reihe/Sitz konnten nicht gefunden werden");
                 return ResponseEntity.badRequest().body(buchungDTO);
@@ -162,10 +175,7 @@ public class ErstelleBuchungService {
         return buchungDTO;
     }
     private boolean platzBelegt(int reiheNr, int sitzNr, Set<BuchungseinheitDTO> buchungseinheitDTOs){
-        System.out.println("IN");
         for (BuchungseinheitDTO buchungseinheitDTO : buchungseinheitDTOs){
-            System.out.println("R: "+buchungseinheitDTO.getSitzDTO().getReiheDTO().getReihenNummer() + " vs. "+reiheNr);
-            System.out.println("P: "+buchungseinheitDTO.getSitzDTO().getSitzNummer() + " vs. "+sitzNr);
             if (buchungseinheitDTO.getSitzDTO().getReiheDTO().getReihenNummer() == (reiheNr)
                  && buchungseinheitDTO.getSitzDTO().getSitzNummer() == (sitzNr)) return true;
         }

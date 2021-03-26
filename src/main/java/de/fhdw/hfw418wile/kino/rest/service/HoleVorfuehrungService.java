@@ -3,10 +3,7 @@ package de.fhdw.hfw418wile.kino.rest.service;
 import db.executer.PersistenceException;
 import de.fhdw.hfw418wile.kino.rest.dto.*;
 import exceptions.ConstraintViolation;
-import generated.kino.Kino;
-import generated.kino.NoSuchElementException;
-import generated.kino.Resevierung;
-import generated.kino.Vorfuehrung;
+import generated.kino.*;
 import generated.kino.proxies.VorfuehrungProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,19 +12,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 @RestController
 public class HoleVorfuehrungService {
     @GetMapping("/vorfuehrung/all")
-    public ResponseEntity<Set<VorfuehrungDTO>> getVorfuehrungen() throws PersistenceException {
+    public ResponseEntity<Set<VorfuehrungDTO>> getVorfuehrungen() {
         Map<Integer, VorfuehrungProxy> vorfuehrungCache = Kino.getInstance().getVorfuehrungCache();
         Set<Vorfuehrung> vorfuehrungen = new HashSet<>();
         vorfuehrungCache.forEach((integer, vorfuehrungProxy) -> vorfuehrungen.add(vorfuehrungProxy.getTheObject()));
         Set<VorfuehrungDTO> vorfuehrungDTOs = new HashSet<>();
         for (Vorfuehrung vorfuehrung : vorfuehrungen) {
             VorfuehrungDTO vorfuehrungDTO = new VorfuehrungDTO();
+            Set<Resevierung> reservierungen = null;
+            try {
             vorfuehrungDTO.setVorfuehrungNummer(vorfuehrung.getVorfuehrungsNummer());
             vorfuehrungDTO.setFilmDTO(new FilmDTO(vorfuehrung.getFilm().getFilmName()));
             vorfuehrungDTO.setFreiePlaetzeParkett(vorfuehrung.getFreiePlaetzeParkett());
@@ -38,7 +38,12 @@ public class HoleVorfuehrungService {
             vorfuehrungDTO.setPreisLoge(vorfuehrung.getPreisLoge());
             vorfuehrungDTO.setVorfuehrungNummer(vorfuehrung.getVorfuehrungsNummer());
             vorfuehrungDTO.setSaalDTO(new SaalDTO(vorfuehrung.getSaal().getSaalNummer()));
-            Set<Resevierung> reservierungen = vorfuehrung.getReservierungen();
+            reservierungen = vorfuehrung.getReservierungen();
+            } catch (PersistenceException e){
+                vorfuehrungDTO.setMessage("Persistenzfehler in einer der Vorfuerhrungen");
+                vorfuehrungDTOs.add(vorfuehrungDTO);
+                return ResponseEntity.badRequest().body(vorfuehrungDTOs);
+            }
             Set<ReservierungDTO> reservierungDTOs = new HashSet<>();
             for (Resevierung resevierung : reservierungen) {
                 reservierungDTOs.add(new ReservierungDTO(resevierung.getName()));
@@ -51,20 +56,18 @@ public class HoleVorfuehrungService {
 
     @GetMapping("/vorfuehrung/{vorfuehrungsNummer}")
     public ResponseEntity<VorfuehrungDTO> holeVorfuehrung(@PathVariable Integer vorfuehrungsNummer) {
+        VorfuehrungDTO vorfuehrungDTO = new VorfuehrungDTO();
         Vorfuehrung vorfuehrung;
         try {
             vorfuehrung = Kino.getInstance().holeVorfuehrung(vorfuehrungsNummer);
         } catch (NoSuchElementException e) {
-            VorfuehrungDTO vorfuehrungDTO = new VorfuehrungDTO();
             vorfuehrungDTO.setMessage("Vorfuehrungsnummer unbekannt");
             return ResponseEntity.badRequest().body(vorfuehrungDTO);
         }
-        VorfuehrungDTO vorfuehrungDTO = new VorfuehrungDTO();
         vorfuehrungDTO.setVorfuehrungNummer(vorfuehrung.getVorfuehrungsNummer());
         try {
             vorfuehrungDTO.setFilmDTO(new FilmDTO(vorfuehrung.getFilm().getFilmName()));
         } catch (PersistenceException e) {
-            vorfuehrungDTO = new VorfuehrungDTO();
             vorfuehrungDTO.setMessage("Der Vorfuehrung ist kein valider Film zugeordnet");
             return ResponseEntity.badRequest().body(vorfuehrungDTO);
         }
@@ -91,7 +94,17 @@ public class HoleVorfuehrungService {
                 int reiheNummer = buchungseinheitDTO.getSitzDTO().getReiheDTO().getReihenNummer();
                 int sitzNummer =buchungseinheitDTO.getSitzDTO().getSitzNummer();
                 try {
-                saalDTO.getReihen().get(reiheNummer - 1 ).getSitze().get(sitzNummer -1).setBelegt(true);
+                    List<ReiheDTO> reiheDTOs = saalDTO.getReihen();
+                    for (ReiheDTO reiheDTO : reiheDTOs){
+                        if (reiheDTO.getReihenNummer() == reiheNummer){
+                            for (SitzDTO sitzDTO : reiheDTO.getSitze()){
+                                if (sitzDTO.getSitzNummer() == sitzNummer)
+                                    sitzDTO.setBelegt(true);
+                            }
+                        }
+
+                    }
+                //saalDTO.getReihen().get(reiheNummer - 1 ).getSitze().get(sitzNummer -1).setBelegt(true);
                 } catch (IndexOutOfBoundsException e){
                     vorfuehrungDTO.setMessage("Die/der gewuenschte Reihe ("+reiheNummer+")/Sitz ("+sitzNummer+") existiert nicht und konnte nicht gebucht werden");
                     return ResponseEntity.badRequest().body(vorfuehrungDTO);
@@ -103,7 +116,6 @@ public class HoleVorfuehrungService {
         try {
             reservierungen = vorfuehrung.getReservierungen();
         } catch (PersistenceException e) {
-            vorfuehrungDTO = new VorfuehrungDTO();
             vorfuehrungDTO.setMessage("Der Vorfuehrung sind keine validen Reservierungen zugeordnet");
             return ResponseEntity.badRequest().body(vorfuehrungDTO);
         }
@@ -112,6 +124,12 @@ public class HoleVorfuehrungService {
             reservierungDTOs.add(new ReservierungDTO(resevierung.getName()));
         }
         vorfuehrungDTO.setReservierungDTOs(reservierungDTOs);
+        try {
+            vorfuehrungDTO.setErwarteterUmsatz(Kino.getInstance().erhebeErwartetenUmsatz(vorfuehrung));
+        } catch (PersistenceException e) {
+            vorfuehrungDTO.setMessage("Persistenzfehler beim erheben des erwarteten Umsatzes");
+            return ResponseEntity.badRequest().body(vorfuehrungDTO);
+        }
         return ResponseEntity.accepted().body(vorfuehrungDTO);
     }
 }

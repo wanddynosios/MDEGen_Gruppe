@@ -17,11 +17,11 @@ public class VorfuehrungDTO extends DTO{
     private Integer freiePlaetzeParkett;
     private Integer freiePlaetzeMitte;
     private Integer freiePlaetzeLoge;
+    private Integer erwarteterUmsatz;
     private Set<ReservierungDTO> reservierungDTOs;
     private FilmDTO filmDTO;
     private SaalDTO saalDTO;
-    //TODO vorfuehrung ist vorbei???
-
+    private boolean vorfuehrungVorbei; //TODO vorfuehrung ist vorbei???
 
     @Override
     public String toString() {
@@ -33,9 +33,11 @@ public class VorfuehrungDTO extends DTO{
                 ", freiePlaetzeParkett=" + freiePlaetzeParkett +
                 ", freiePlaetzeMitte=" + freiePlaetzeMitte +
                 ", freiePlaetzeLoge=" + freiePlaetzeLoge +
+                ", erwarteterUmsatz=" + erwarteterUmsatz +
                 ", reservierungDTOs=" + reservierungDTOs +
                 ", filmDTO=" + filmDTO +
                 ", saalDTO=" + saalDTO +
+                ", vorfuehrungVorbei=" + vorfuehrungVorbei +
                 '}';
     }
 }

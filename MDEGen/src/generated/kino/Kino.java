@@ -249,9 +249,29 @@ public class Kino extends Observable{
 /**
  * Gibt den bisher durch Buchungen und Reservierungen zu erwarteten Umsatz pro Vorstellung zurück
  */
-   public Integer erhebeErwartetenUmsatz(Vorfuehrung vorfuehrung){
-      // TODO: Implement Operation erhebeErwartetenUmsatz
-      return null;
+   public Integer erhebeErwartetenUmsatz(Vorfuehrung vorfuehrung) throws PersistenceException {
+      int umsatz = 0;
+      int preisParkett = vorfuehrung.getPreisParkett();
+      int preisMitte = vorfuehrung.getPreisMitte();
+      int preisLoge  = vorfuehrung.getPreisLoge();
+
+      List<Reihe> reihen = new ArrayList<>();
+      for (Buchung buchung : vorfuehrung.getBuchungen()) {
+         for (BuchungsEinheit buchungsEinheit : buchung.getBuchungsEinheiten()) {
+            reihen.add(buchungsEinheit.getSitz().getReihe());
+            System.out.println(buchungsEinheit.getSitz().getReihe().getReihenNummer());
+         }
+      }
+      for (Reihe reihe : reihen){
+         Kategorie kategorie = reihe.getKategorie();
+         switch (kategorie.getClass().getSimpleName()){
+            case "KategorieParkett": umsatz += preisParkett; break;
+            case "KategorieMitte":   umsatz += preisMitte; break;
+            case "KategorieLoge":    umsatz += preisLoge; break;
+            default: throw new RuntimeException("Unbekannte Kategorie. Schreibweise geaendert?");
+         }
+      }
+      return umsatz;
    }
 /**
  * holt den aktuellen Aufbau des Saals
