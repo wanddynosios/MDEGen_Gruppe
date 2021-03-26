@@ -54,12 +54,26 @@ public class ErstelleBuchungService {
             buchungDTO.setMessage("Die angegebene Reservierung konnte nicht gefunden werden");
             return ResponseEntity.badRequest().body(buchungDTO);
         }
+        if (vorfuehrung.getBereitsVorbei()){
+            buchungDTO.setMessage("Die Vorfuehrung ist vorbei. Eine Buchung ist nicht mehr moeglich");
+            return ResponseEntity.badRequest().body(buchungDTO);
+        }
         //hole bestehende Buchungen und die dazugehörigen BuchungseinheitsDTOs
         ResponseEntity<Set<BuchungDTO>> buchungsDTOs = new HoleBuchungService().holeBuchungen(vorfuehrung.getVorfuehrungsNummer());
         if (!buchungsDTOs.getStatusCode().equals(HttpStatus.ACCEPTED)){
             buchungDTO.setMessage("Die bestehenden Buchungen zur vorfuehrung konnten nicht geholt werden"+buchungsDTOs.getBody().toString());
             return ResponseEntity.badRequest().body(buchungDTO);
         }
+        //hole die Vorfuehrung
+        ResponseEntity<VorfuehrungDTO> vorfuehrungDTOResponse = new HoleVorfuehrungService().holeVorfuehrung(vorfuehrung.getVorfuehrungsNummer());
+        if (vorfuehrungDTOResponse.getStatusCode() != HttpStatus.ACCEPTED){
+            buchungDTO.setMessage("Die zugehoerige Vorfuehrung konnte nicht gefunden werden: "+vorfuehrungDTOResponse.getBody().getMessage());
+            return ResponseEntity.badRequest().body(buchungDTO);
+        }
+        VorfuehrungDTO vorfuehrungDTO = vorfuehrungDTOResponse.getBody();
+        buchungDTO.setVorfuehrungDTO(vorfuehrungDTO);
+        buchungDTO.setBuchungsNummer(buchungsNummer);
+
         Set<BuchungseinheitDTO> buchungseinheitDTOs = new HashSet<>();
         buchungsDTOs.getBody().forEach(
                 buchungDTO1 -> buchungDTO1.
@@ -75,6 +89,23 @@ public class ErstelleBuchungService {
                 buchungDTO.setMessage("Der Platz " + sitzNummer + " in der Reihe " + reihenNummer + " ist bereits belegt!!!");
                 return ResponseEntity.badRequest().body(buchungDTO);
             }
+
+
+            for (ReiheDTO reiheDTO : vorfuehrungDTO.getSaalDTO().getReihen()){
+                if (reiheDTO.getReihenNummer() == reihenNummer){
+                    try {
+                        if (!KategorieDTO.getDTOForKategorie(resevierung.getKategorie()).equals(reiheDTO.getKategorieDTO())){
+                            buchungDTO.setMessage("Du versuchst gerade einen Platz in einer Kategorie zu buchen, in der du nicht reserviert hast. Du Schlingel!");
+                            return ResponseEntity.badRequest().body(buchungDTO);
+                        }
+                    } catch (PersistenceException e) {
+                        buchungDTO.setMessage("Der Reservierung ist nicht valide eine Kategorie zugeordnet");
+                        return ResponseEntity.badRequest().body(buchungDTO);
+                    }
+                }
+            }
+
+
         }
         for (BuchungseinheitDTO buchungseinheitDTO : buchungDTO.getBuchungseinheitDTOs()) {
             int reihenNummer = buchungseinheitDTO.getSitzDTO().getReiheDTO().getReihenNummer();
@@ -139,14 +170,6 @@ public class ErstelleBuchungService {
         }
         ReservierungDTO reservierungDTO = reservierungDTOResponse.getBody();
         buchungDTO.setReservierungDTO(reservierungDTO);
-        ResponseEntity<VorfuehrungDTO> vorfuehrungDTOResponse = new HoleVorfuehrungService().holeVorfuehrung(vorfuehrung.getVorfuehrungsNummer());
-        if (vorfuehrungDTOResponse.getStatusCode() != HttpStatus.ACCEPTED){
-            buchungDTO.setMessage("Die zugehoerige Vorfuehrung konnte nicht gefunden werden: "+vorfuehrungDTOResponse.getBody().getMessage());
-            return ResponseEntity.badRequest().body(buchungDTO);
-        }
-        VorfuehrungDTO vorfuehrungDTO = vorfuehrungDTOResponse.getBody();
-        buchungDTO.setVorfuehrungDTO(vorfuehrungDTO);
-        buchungDTO.setBuchungsNummer(buchungsNummer);
 
         return ResponseEntity.accepted().body(buchungDTO);
     }

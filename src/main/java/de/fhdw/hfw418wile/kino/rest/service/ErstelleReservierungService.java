@@ -16,7 +16,6 @@ public class ErstelleReservierungService {
         Vorfuehrung vorfuehrung;
         try {
             vorfuehrung = Kino.getInstance().holeVorfuehrung(vorfuherungNummer);
-            System.out.println("V: "+vorfuehrung);
         } catch (NoSuchElementException e) {
             reservierungDTO.setMessage("Vorfuehrungsnummer unbekannt");
             return ResponseEntity.badRequest().body(reservierungDTO);
@@ -30,6 +29,10 @@ public class ErstelleReservierungService {
         }
         if (!thrown){
             reservierungDTO.setMessage("Reservierung unter diesem Namen fuer diesen Film bereits vorhanden");
+            return ResponseEntity.badRequest().body(reservierungDTO);
+        }
+        if (vorfuehrung.getBereitsVorbei()){
+            reservierungDTO.setMessage("Die Vorfuehrung ist vorbei. Eine Resevierung ist nicht mehr moeglich");
             return ResponseEntity.badRequest().body(reservierungDTO);
         }
 

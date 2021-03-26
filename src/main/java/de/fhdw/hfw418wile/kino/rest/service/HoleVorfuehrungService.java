@@ -130,6 +130,7 @@ public class HoleVorfuehrungService {
             vorfuehrungDTO.setMessage("Persistenzfehler beim erheben des erwarteten Umsatzes");
             return ResponseEntity.badRequest().body(vorfuehrungDTO);
         }
+        vorfuehrungDTO.setVorfuehrungVorbei(vorfuehrung.getBereitsVorbei());
         return ResponseEntity.accepted().body(vorfuehrungDTO);
     }
 }
