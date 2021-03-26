@@ -18,8 +18,9 @@ import db.connection.TypeKeyManager;
 import db.connection.DBConnectionManager;
 import db.connection.DBConnectionData;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+
 //20 ===== Editable : Your import section =========
 //30 ===== GENERATED: Main Section ================
 public class Kino extends Observable{
@@ -273,7 +274,7 @@ public class Kino extends Observable{
 /**
  * holt die Vorfuehrung
  */
-   public Vorfuehrung holeVorfuehrung(Integer vorfuehrungNummer) throws NoSuchElementException{
+   public Vorfuehrung holeVorfuehrung(Integer vorfuehrungNummer) throws NoSuchElementException {
       try {
          Map<Integer, VorfuehrungProxy> voerfuherungen = Kino.getInstance().getVorfuehrungCache();
          Map<Integer, Integer> vorfuherungsNummernUndVorfIds = new HashMap<>();
@@ -327,7 +328,7 @@ public class Kino extends Observable{
 /**
  * holt eine Buchung zu einer Buchungsnummer
  */
-   public Buchung holeBuchung(Integer buchungsNummer)throws NoSuchElementException{
+   public Buchung holeBuchung(Integer buchungsNummer) throws NoSuchElementException{
       try {
          Map<Integer, BuchungProxy> buchungen = Kino.getInstance().getBuchungCache();
          Map<Integer, Integer> buchungsNummernUndBuchungsIds = new HashMap<>();
@@ -341,6 +342,40 @@ public class Kino extends Observable{
       } catch (NullPointerException n){
          throw new NoSuchElementException();
       }
+   }
+   /*
+   holt die hoehste Vorfuehrungsnummer
+    */
+   public Integer holeHoehsteVorfuerhungsnummer(){
+      Map<Integer, VorfuehrungProxy> voerfuherungen = Kino.getInstance().getVorfuehrungCache();
+      Map<Integer, Integer> vorfuherungsNummernUndVorfIds = new HashMap<>();
+      voerfuherungen.forEach((vorfuehrungId, vorfuehrungProxy) ->
+              vorfuherungsNummernUndVorfIds.put(vorfuehrungProxy.getVorfuehrungsNummer(), vorfuehrungId));
+      Set<Integer> vorfNummern =  vorfuherungsNummernUndVorfIds.keySet();
+      Integer max;
+       try {
+          max = Collections.max(vorfNummern);
+       } catch (Exception e){
+          return 0;
+       }
+       return max;
+   }
+   /*
+   holt die hoehste Buchungsnummer
+    */
+   public Integer holeHoehsteBuchungsnummer(){
+      Map<Integer, BuchungProxy> buchungen = Kino.getInstance().getBuchungCache();
+      Map<Integer, Integer> buchungsNummernUndBuchungsIds = new HashMap<>();
+      buchungen.forEach((buchungId, buchungProxy) ->
+              buchungsNummernUndBuchungsIds.put(buchungProxy.getBuchungsNummer(), buchungId));
+      Set<Integer> buchungsNummern = buchungsNummernUndBuchungsIds.keySet();
+      Integer max;
+      try {
+         max = Collections.max(buchungsNummern);
+      } catch (Exception e){
+         return 0;
+      }
+      return max;
    }
 //90 ===== GENERATED: End of Your Operations ======
 }

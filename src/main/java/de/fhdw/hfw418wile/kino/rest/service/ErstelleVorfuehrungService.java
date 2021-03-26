@@ -37,11 +37,13 @@ public class ErstelleVorfuehrungService {
             vorfuehrungDTO.setMessage("Saalnummer unbekannt");
             return ResponseEntity.badRequest().body(vorfuehrungDTO);
         }
+
+        Integer vorfuehrungsNummer = Kino.getInstance().holeHoehsteVorfuerhungsnummer() + 1;
         try {
             Vorfuehrung.createFresh(
                     film,
                     saal,
-                    vorfuehrungDTO.getVorfuehrungNummer(),
+                    vorfuehrungsNummer,
                     vorfuehrungDTO.getPreisParkett(),
                     vorfuehrungDTO.getPreisMitte(),
                     vorfuehrungDTO.getPreisLoge(),
@@ -50,6 +52,7 @@ public class ErstelleVorfuehrungService {
                     saal.getAnzhalPlaetzeLoge(),
                     false
             );
+            vorfuehrungDTO.setVorfuehrungNummer(vorfuehrungsNummer);
             vorfuehrungDTO.setFreiePlaetzeParkett(saal.getAnzahlPlaetzeParkett());
             vorfuehrungDTO.setFreiePlaetzeMitte(saal.getAnzahlPlaetzeMitte());
             vorfuehrungDTO.setFreiePlaetzeLoge(saal.getAnzhalPlaetzeLoge());

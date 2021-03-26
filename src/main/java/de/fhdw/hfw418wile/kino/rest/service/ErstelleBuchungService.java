@@ -17,8 +17,9 @@ public class ErstelleBuchungService {
     @PutMapping("/buchung")
     public ResponseEntity<BuchungDTO> buche(@RequestBody BuchungDTO buchungDTO){
         boolean thrown = false;
+        Integer buchungsNummer = Kino.getInstance().holeHoehsteBuchungsnummer() + 1;
         try {
-            Kino.getInstance().holeBuchung(buchungDTO.getBuchungsNummer());
+            Kino.getInstance().holeBuchung(buchungsNummer);
         } catch (NoSuchElementException e) {
             //alles ok!
             thrown = true;
@@ -38,7 +39,7 @@ public class ErstelleBuchungService {
         Buchung buchung;
         try {
             buchung = Buchung.createFresh(
-                    buchungDTO.getBuchungsNummer(),
+                    buchungsNummer,
                     vorfuehrung
             );
         } catch (PersistenceException e) {
@@ -109,6 +110,7 @@ public class ErstelleBuchungService {
         }
         VorfuehrungDTO vorfuehrungDTO = vorfuehrungDTOResponse.getBody();
         buchungDTO.setVorfuehrungDTO(vorfuehrungDTO);
+        buchungDTO.setBuchungsNummer(buchungsNummer);
 
         return ResponseEntity.accepted().body(buchungDTO);
     }

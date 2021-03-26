@@ -6,7 +6,6 @@ package generated.kino;
 //10 ===== GENERATED:      Import Section =========
 import java.sql.SQLException;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import db.connection.NoConnectionException;
 import db.connection.TypeKeyManager;
 import java.util.Optional;
