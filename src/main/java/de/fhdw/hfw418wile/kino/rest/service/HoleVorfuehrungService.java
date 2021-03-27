@@ -81,7 +81,7 @@ public class HoleVorfuehrungService {
         SaalDTO saalDTO = null;
         try {
             saalDTO = new HoleSaalService().holeSaal(vorfuehrung.getSaal().getSaalNummer()).getBody();
-        } catch (ConstraintViolation | PersistenceException constraintViolation) {
+        } catch (PersistenceException constraintViolation) {
             vorfuehrungDTO.setMessage("Fehler im Saal: " + saalDTO.getMessage());
         }
         ResponseEntity<Set<BuchungDTO>> buchungDTOs = new HoleBuchungService().holeBuchungen(vorfuehrungsNummer);

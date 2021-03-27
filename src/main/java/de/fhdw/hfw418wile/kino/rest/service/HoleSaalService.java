@@ -35,7 +35,7 @@ public class HoleSaalService {
     }
 
     @GetMapping("/saal/{id}")
-    public ResponseEntity<SaalDTO> holeSaal(@PathVariable Integer id) throws PersistenceException, ConstraintViolation { //TODO
+    public ResponseEntity<SaalDTO> holeSaal(@PathVariable Integer id){
 //        Reihe reiheX = Reihe.createFresh(
 //                KategorieParkett.getInstance(),
 //                1);
