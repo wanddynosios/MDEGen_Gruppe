@@ -327,6 +327,18 @@ public class Kino extends Observable{
          throw new NoSuchElementException();
       }
    }
+
+/**
+* Wenn Film existiert returns true, else returns false
+*/
+   public Boolean filmExistiert(String filmName){
+      try{
+         holeFilm(filmName);
+      } catch (NoSuchElementException e){
+         return false;
+      }
+      return true;
+   }
 /**
  * holt die Reservierung zum Namen
  */

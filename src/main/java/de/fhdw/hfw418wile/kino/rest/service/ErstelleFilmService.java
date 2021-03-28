@@ -14,20 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ErstelleFilmService {
     @PutMapping("/film")
     public ResponseEntity<FilmDTO> erstelleFilm(@RequestBody FilmDTO filmDTO){
-        boolean thrown = false;
-        try {
-            Film film = Kino.getInstance().holeFilm(filmDTO.getFilmName());
-        } catch (NoSuchElementException e) {
-            //alles ok
-            thrown = true;
-        } finally {
-            if (!thrown){
-                filmDTO.setMessage("Film bereits vorhanden");
-                return ResponseEntity.badRequest().body(filmDTO);
-            }
-        }
         if (filmDTO.getFilmName() == null){
             filmDTO.setMessage("Kein Filmname angegeben");
+            return ResponseEntity.badRequest().body(filmDTO);
+        }
+        if (Kino.getInstance().filmExistiert(filmDTO.getFilmName())){
+            filmDTO.setMessage("Film bereits vorhanden");
             return ResponseEntity.badRequest().body(filmDTO);
         }
         try {

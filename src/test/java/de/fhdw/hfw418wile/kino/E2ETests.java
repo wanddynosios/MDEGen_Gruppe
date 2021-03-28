@@ -36,10 +36,13 @@ public class E2ETests {
     @Test
     @Order(1)
     public void testFilm(){
+        //Arrange
         FilmDTO filmDTO = new FilmDTO(filmName);
         ResponseEntity<FilmDTO> filmDTOResponseEntity = new ErstelleFilmService().erstelleFilm(filmDTO);
         Assertions.assertEquals(filmDTOResponseEntity.getStatusCode(), HttpStatus.ACCEPTED);
+        //Act
         ResponseEntity<FilmDTO> geholteFilmeResponseEntity = new HoleFilmService().holeFilm(filmName);
+        //Assert
         Assertions.assertEquals(geholteFilmeResponseEntity.getStatusCode(), HttpStatus.ACCEPTED);
         Assertions.assertEquals(geholteFilmeResponseEntity.getBody().getFilmName(), filmName);
     }
@@ -116,7 +119,7 @@ public class E2ETests {
         vorfuehrungDTO.setPreisLoge(11);
         ResponseEntity<VorfuehrungDTO> vorfuehrungDTOResponseEntity = new ErstelleVorfuehrungService().erstelleVorfuehrung(vorfuehrungDTO);
         Assertions.assertEquals(vorfuehrungDTOResponseEntity.getStatusCode(), HttpStatus.ACCEPTED);
-        vorfuehrungsNummer = vorfuehrungDTOResponseEntity.getBody().getVorfuehrungNummer();System.out.println(vorfuehrungsNummer);
+        vorfuehrungsNummer = vorfuehrungDTOResponseEntity.getBody().getVorfuehrungNummer();
         ResponseEntity<VorfuehrungDTO> geholterVorfuehrungDTO = new HoleVorfuehrungService().holeVorfuehrung(vorfuehrungsNummer);
         Assertions.assertEquals(geholterVorfuehrungDTO.getStatusCode(), HttpStatus.ACCEPTED);
         Assertions.assertEquals(geholterVorfuehrungDTO.getBody().getFreiePlaetzeParkett(), 5);
