@@ -21,7 +21,11 @@ public class VorfuehrungDTO extends DTO{
     private Set<ReservierungDTO> reservierungDTOs;
     private FilmDTO filmDTO;
     private SaalDTO saalDTO;
-    private boolean vorfuehrungVorbei; //TODO vorfuehrung ist vorbei???
+    private boolean vorfuehrungVorbei;
+
+    public VorfuehrungDTO(Integer vorfuehrungNummer) {
+        this.vorfuehrungNummer = vorfuehrungNummer;
+    }
 
     @Override
     public String toString() {
