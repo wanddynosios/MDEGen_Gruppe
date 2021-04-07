@@ -72,6 +72,7 @@ public class HoleSaalService {
             return ResponseEntity.badRequest().body(saalDTO);
         }
         List<ReiheDTO> reiheDTOs = new ArrayList<>();
+        reihen.sort(Comparator.comparing(Reihe::getReihenNummer));
         for (Reihe reihe : reihen){
             List<Sitz> sitze;
             try {

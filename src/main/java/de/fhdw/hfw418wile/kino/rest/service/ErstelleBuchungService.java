@@ -54,6 +54,10 @@ public class ErstelleBuchungService {
             buchungDTO.setMessage("Die angegebene Reservierung konnte nicht gefunden werden");
             return ResponseEntity.badRequest().body(buchungDTO);
         }
+        if (resevierung.getIstBereitsEingeloest()){
+            buchungDTO.setMessage("Die Reseriverung ist bereits Eingelöst. Es kann nicht mehr gebucht werden");
+            return ResponseEntity.badRequest().body(buchungDTO);
+        }
         if (vorfuehrung.getBereitsVorbei()){
             buchungDTO.setMessage("Die Vorfuehrung ist vorbei. Eine Buchung ist nicht mehr moeglich");
             return ResponseEntity.badRequest().body(buchungDTO);
