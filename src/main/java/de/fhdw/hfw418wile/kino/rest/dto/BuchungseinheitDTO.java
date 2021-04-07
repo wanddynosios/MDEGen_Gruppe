@@ -13,4 +13,11 @@ public class BuchungseinheitDTO extends DTO{
     public BuchungseinheitDTO(SitzDTO sitzDTO) {
         this.sitzDTO = sitzDTO;
     }
+
+    @Override
+    public String toString() {
+        return "BuchungseinheitDTO{" +
+                "sitzDTO=" + sitzDTO +
+                '}';
+    }
 }

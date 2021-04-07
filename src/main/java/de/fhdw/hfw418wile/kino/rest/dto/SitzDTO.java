@@ -19,4 +19,12 @@ public class SitzDTO extends DTO{
         this.sitzNummer = sitzNummer;
     }
 
+    @Override
+    public String toString() {
+        return "SitzDTO{" +
+                "sitzNummer=" + sitzNummer +
+                ", reiheDTO=" + reiheDTO +
+                ", belegt=" + belegt +
+                '}';
+    }
 }
